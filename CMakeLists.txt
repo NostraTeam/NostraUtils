@@ -47,14 +47,20 @@ else()
 endif()
 
 install(TARGETS NostraUtils EXPORT NostraUtilsTargets
-	RUNTIME DESTINATION "bin"
-	LIBRARY DESTINATION "lib"
-	ARCHIVE DESTINATION "lib"
-	INCLUDES DESTINATION "include")
+	RUNTIME 
+		DESTINATION "bin"
+	LIBRARY 
+		DESTINATION "lib"
+	ARCHIVE	
+		DESTINATION "lib"
+	INCLUDES 
+		DESTINATION "include"
+	COMPONENT 
+		"Required")
 
-install(DIRECTORY "src/header/" 
+install(DIRECTORY "include" 
 	DESTINATION 
-		"include"
+		"."
 	COMPONENT
 		"Develop")
 # Install the additionally configured file(s)
@@ -66,14 +72,14 @@ install(DIRECTORY "${PROJECT_BINARY_DIR}/include/"
 
 # Macro for simpler addition of tests
 macro(nou_add_test TEST_NAME)
-	add_executable(${TEST_NAME} "test/${TEST_NAME}.cpp")
+	add_executable("${TEST_NAME}" "test/${TEST_NAME}.cpp")
 add_test(
 	NAME 
-		${TEST_NAME}
+		"${TEST_NAME}"
 	COMMAND 
-		${TEST_NAME}
+		"${TEST_NAME}"
 	WORKING_DIRECTORY 
-		${TEST_NAME})
+		"${TEST_NAME}")
 endmacro()
 
 enable_testing()
@@ -84,6 +90,70 @@ if(BUILD_TESTING)
 endif()
 # Tests end
 
-install(FILES "cmake/INSTALL_README" DESTINATION ".")
-install(FILES "LICENSE" DESTINATION ".")
-install(FILES "CHANGELOG" DESTINATION ".")
+install(FILES "cmake/INSTALL_README" 
+	DESTINATION	
+		"." 
+	COMPONENT 
+		"Required")
+
+install(FILES "LICENSE"
+	DESTINATION	
+		"." 
+	COMPONENT 
+		"Required")
+
+install(FILES "CHANGELOG"
+	DESTINATION	
+		"." 
+	COMPONENT 
+		"Required")
+
+
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/NostraUtilsConfigVersion.cmake"
+	VERSION "${PROJECT_VERSION}"
+	COMPATIBILITY AnyNewerVersion)
+
+export(EXPORT NostraUtilsTargets
+	FILE "${CMAKE_CURRENT_BINARY_DIR}/NostraUtilsTargets.cmake"
+	NAMESPACE Nostra::)
+
+configure_file("cmake/NostraUtilsConfig.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/NostraUtilsConfig.cmake" @ONLY)
+
+set(CONFIG_PACKAGE_LOCATION "lib/cmake/NostraUtils")
+
+install(EXPORT NostraUtilsTargets
+	FILE
+		"NostraUtilsTargets.cmake"
+	NAMESPACE
+		Nostra::
+	DESTINATION
+		${CONFIG_PACKAGE_LOCATION}
+	COMPONENT
+		"Required")
+
+install(
+  FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/NostraUtilsConfig.cmake"
+  DESTINATION
+    ${CONFIG_PACKAGE_LOCATION}
+  COMPONENT
+    "Develop"
+)
+
+set(CPACK_PACKAGE_NAME              "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VENDOR            "The Nostra Project Team")
+set(CPACK_PACKAGE_VERSION_MAJOR     "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR     "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH     "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_VERSION           "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_DESCRIPTION       "${PROJECT_DESCRIPTION}")
+set(CPACK_PACKAGE_HOMEPAGE_URL      "${PROJECT_HOMEPAGE_URL}")
+set(CPACK_RESOURCE_FILE_LICENSE     "${CMAKE_SOURCE_DIR}/cmake/INSTALL_LICENSE.txt")
+set(CPACK_RESOURCE_FILE_README      "${CMAKE_SOURCE_DIR}/cmake/INSTALL_README")
+set(CPACK_RESOURCE_FILE_WELCOME     "${CMAKE_SOURCE_DIR}/cmake/welcome.txt")
+
+set(CPACK_WIX_UPGRADE_GUID          "50973906-7EB6-4B48-950F-7F324FBCE557")
+
+include(CPack)
