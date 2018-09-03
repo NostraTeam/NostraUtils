@@ -1,0 +1,29 @@
+#ifndef NOU_CONFIG_HPP
+#define NOU_CONFIG_HPP
+
+/**
+\file Config.hpp
+\author	 Lukas Reichmann
+\since   1.1.0.0
+\version @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@
+\brief   This file will be configured by CMake and provides macros that inject CMake defined variables into 
+		 the source code of NostraUtils.
+*/
+
+#ifndef NOU_INTERNAL_VERSION_MAJOR
+#define NOU_INTERNAL_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#endif
+
+#ifndef NOU_INTERNAL_VERSION_MINOR
+#define NOU_INTERNAL_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#endif
+
+#ifndef NOU_INTERNAL_VERSION_PATCH
+#define NOU_INTERNAL_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#endif
+
+#ifndef NOU_INTERNAL_VERSION_TWEAK
+#define NOU_INTERNAL_VERSION_TWEAK @PROJECT_VERSION_TWEAK@
+#endif
+
+#endif
