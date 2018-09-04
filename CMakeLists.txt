@@ -32,6 +32,12 @@ target_compile_definitions(NostraUtils
 	PRIVATE
 		"NOU_EXPORT_SYMBOLS")
 
+if(NOU_BUILD_SHARED)
+	target_compile_definitions(NostraUtils
+		PRIVATE
+			"NOU_DLL")
+endif()
+
 if(MSVC)
 	target_compile_options(NostraUtils
 		PRIVATE
