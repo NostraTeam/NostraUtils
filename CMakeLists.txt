@@ -98,7 +98,7 @@ if(NOU_BUILD_DOC)
 			COMMENT "Generating Doxygen documentation."
 			VERBATIM)
 
-		install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/doc/html"
+		install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/doc/html/"
 			DESTINATION
 				"doc"
 			COMPONENT
@@ -123,6 +123,11 @@ function(nou_add_test TEST_NAME)
 	add_executable("nou.${TEST_NAME}" "test/${TEST_NAME}.cpp")
 	
 	target_link_libraries("nou.${TEST_NAME}" Nostra::Utils)
+
+	install(TARGETS "nou.${TEST_NAME}" EXPORT NostraUtilsTargets
+		RUNTIME 
+			DESTINATION "test"
+			COMPONENT "Test")
 
 	add_test(
 		NAME 
