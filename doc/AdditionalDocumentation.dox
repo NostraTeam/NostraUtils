@@ -1,0 +1,21 @@
+/**
+\namespace nou
+
+\brief
+The main and root namespace of NostraUtils.
+
+\details
+Any functionality that is provided by NostraUtils is nested in this namespace (or in a namespace that is
+nested in this namespace).
+*/
+
+/**
+\namespace nou::internal
+
+\brief
+A namespace that contains symbols that should only be used by the library itself and not by a user.
+
+\warning
+The interfaces of symbols in this namespace may change without compatibility between versions. This includes
+preprocessor macros that start with the prefix <code>NOU_INTERNAL</code>.
+*/
