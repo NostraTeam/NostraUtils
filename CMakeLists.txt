@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.8.2 FATAL_ERROR)
 
-option(NOU_BUILD_SHARED "If enabled, the library will be build as a shared library." OFF)
-option(NOU_BUILD_DOC    "If enabled, and Doxygen is installed, the documentation will be built." ON)
+option(NOU_BUILD_SHARED   "If enabled, the library will be build as a shared library." OFF)
+option(NOU_BUILD_DOC      "If enabled, and Doxygen is installed, the documentation will be built." ON)
+option(NOU_BUILD_EXAMPLES "If enabled, the examples that come with the library will be build." ON)
 
 project(NostraUtils
 	VERSION 1.1.0.0
@@ -55,16 +56,13 @@ endif()
 install(TARGETS NostraUtils EXPORT NostraUtilsTargets
 	RUNTIME 
 		DESTINATION "bin"
-	COMPONENT 
-		"Required"
+		COMPONENT "Required"
 	LIBRARY 
 		DESTINATION "lib"
-	COMPONENT 
-		"Required"
+		COMPONENT "Required"
 	ARCHIVE	
 		DESTINATION "lib"
-	COMPONENT 
-		"Required"
+		COMPONENT "Required"
 	INCLUDES 
 		DESTINATION "include")
 
@@ -120,7 +118,7 @@ endif()
 
 
 
-# Macro for simpler addition of tests
+# Function for simpler addition of tests
 function(nou_add_test TEST_NAME)
 	add_executable("nou.${TEST_NAME}" "test/${TEST_NAME}.cpp")
 	
@@ -145,6 +143,28 @@ if(BUILD_TESTING)
 	nou_add_test(stddef.wt)
 endif()
 # Tests end
+
+
+
+# Function for simpler addition of examples
+function(nou_add_example EXAMPLE_NAME)
+	add_executable("${EXAMPLE_NAME}" "examples/${EXAMPLE_NAME}.cpp")
+
+	target_link_libraries("${EXAMPLE_NAME}" Nostra::Utils)
+
+	install(TARGETS "${EXAMPLE_NAME}" EXPORT NostraUtilsTargets
+		RUNTIME 
+			DESTINATION "examples"
+			COMPONENT "Examples")
+endfunction()
+
+# Examples start
+if(NOU_BUILD_EXAMPLES)
+	nou_add_example(stddef.ex)
+endif()
+# Examples end
+
+
 
 install(FILES "cmake/INSTALL_README" 
 	DESTINATION	

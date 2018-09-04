@@ -33,7 +33,7 @@ The attributes are:
 <b>Note:</b> This system does NOT use defined or undefined macros - all of the macros are always defined, but
 the value that the attributes expand to changes.
 
-Example:
+<b>Example:</b>
 \code{.cpp}
 #if NOU_OS == NOU_OS_LINUX
 	//This will only get compiled when compiling under Linux
@@ -41,6 +41,14 @@ Example:
 	//This will only get compiled when compiling under Windows
 #endif
 \endcode
+
+For a more detailed example, see \link stddef.ex.cpp here\endlink.
+*/
+
+/**
+\example stddef.ex.cpp
+
+An example that demonstrates the usage of the macros provided by the stddef component.
 */
 
 /**
