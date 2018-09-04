@@ -10,18 +10,62 @@
 		 the source code of NostraUtils.
 */
 
+/**
+\brief
+An integer constant that expands to the major part of the current version of the library.
+
+\note
+This constant should not be used by a user of the library, it is only made for internal usage.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
+*/
 #ifndef NOU_INTERNAL_VERSION_MAJOR
 #define NOU_INTERNAL_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
 #endif
 
+/**
+\brief
+An integer constant that expands to the minor part of the current version of the library.
+
+\note
+This constant should not be used by a user of the library, it is only made for internal usage.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
+*/
 #ifndef NOU_INTERNAL_VERSION_MINOR
 #define NOU_INTERNAL_VERSION_MINOR @PROJECT_VERSION_MINOR@
 #endif
 
+/**
+\brief
+An integer constant that expands to the patch part of the current version of the library.
+
+\note
+This constant should not be used by a user of the library, it is only made for internal usage.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
+*/
 #ifndef NOU_INTERNAL_VERSION_PATCH
 #define NOU_INTERNAL_VERSION_PATCH @PROJECT_VERSION_PATCH@
 #endif
 
+/**
+\brief
+An integer constant that expands to the tweak part of the current version of the library.
+
+\note
+This constant should not be used by a user of the library, it is only made for internal usage.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
+*/
 #ifndef NOU_INTERNAL_VERSION_TWEAK
 #define NOU_INTERNAL_VERSION_TWEAK @PROJECT_VERSION_TWEAK@
 #endif
