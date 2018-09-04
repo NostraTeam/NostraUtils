@@ -74,7 +74,7 @@ install(DIRECTORY "${PROJECT_BINARY_DIR}/include/"
 		"Develop")
 
 # Macro for simpler addition of tests
-macro(nou_add_test TEST_NAME)
+function(nou_add_test TEST_NAME)
 	add_executable("${TEST_NAME}" "test/${TEST_NAME}.cpp")
 
 	target_link_libraries("${TEST_NAME}" Nostra::Utils)
@@ -86,7 +86,7 @@ add_test(
 		"${TEST_NAME}"
 	WORKING_DIRECTORY 
 		"${TEST_NAME}")
-endmacro()
+endfunction()
 
 enable_testing()
 
