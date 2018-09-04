@@ -142,6 +142,7 @@ if(BUILD_TESTING)
 	nou_add_test(cmakebuild.wt)
 	nou_add_test("test.wt")
 	nou_add_test(types.wt)
+	nou_add_test(stddef.wt)
 endif()
 # Tests end
 
