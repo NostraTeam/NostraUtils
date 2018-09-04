@@ -25,7 +25,7 @@ target_include_directories(NostraUtils
 	PUBLIC
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
-		"$<INSTALL_INTERFACE:$include>")
+		"$<INSTALL_INTERFACE:include>")
 
 target_compile_definitions(NostraUtils
 	PRIVATE
@@ -35,8 +35,7 @@ if(MSVC)
 	target_compile_options(NostraUtils
 		PRIVATE
 			"/wd4251"
-			"/WX"
-			"/Wall")
+			"/WX")
 else()
 	target_compile_options(NostraUtils
 		PRIVATE
@@ -49,14 +48,18 @@ endif()
 install(TARGETS NostraUtils EXPORT NostraUtilsTargets
 	RUNTIME 
 		DESTINATION "bin"
+	COMPONENT 
+		"Required"
 	LIBRARY 
 		DESTINATION "lib"
+	COMPONENT 
+		"Required"
 	ARCHIVE	
 		DESTINATION "lib"
-	INCLUDES 
-		DESTINATION "include"
 	COMPONENT 
-		"Required")
+		"Required"
+	INCLUDES 
+		DESTINATION "include")
 
 install(DIRECTORY "include" 
 	DESTINATION 
@@ -73,6 +76,9 @@ install(DIRECTORY "${PROJECT_BINARY_DIR}/include/"
 # Macro for simpler addition of tests
 macro(nou_add_test TEST_NAME)
 	add_executable("${TEST_NAME}" "test/${TEST_NAME}.cpp")
+
+	target_link_libraries("${TEST_NAME}" Nostra::Utils)
+
 add_test(
 	NAME 
 		"${TEST_NAME}"
@@ -87,6 +93,7 @@ enable_testing()
 # Tests start
 if(BUILD_TESTING)
 	nou_add_test(cmakebuild.wt)
+	nou_add_test("test.wt")
 endif()
 # Tests end
 
@@ -139,21 +146,10 @@ install(
   DESTINATION
     ${CONFIG_PACKAGE_LOCATION}
   COMPONENT
-    "Develop"
-)
+    "Develop")
 
-set(CPACK_PACKAGE_NAME              "${PROJECT_NAME}")
-set(CPACK_PACKAGE_VENDOR            "The Nostra Project Team")
-set(CPACK_PACKAGE_VERSION_MAJOR     "${PROJECT_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR     "${PROJECT_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH     "${PROJECT_VERSION_PATCH}")
-set(CPACK_PACKAGE_VERSION           "${PROJECT_VERSION}")
-set(CPACK_PACKAGE_DESCRIPTION       "${PROJECT_DESCRIPTION}")
-set(CPACK_PACKAGE_HOMEPAGE_URL      "${PROJECT_HOMEPAGE_URL}")
-set(CPACK_RESOURCE_FILE_LICENSE     "${CMAKE_SOURCE_DIR}/cmake/INSTALL_LICENSE.txt")
-set(CPACK_RESOURCE_FILE_README      "${CMAKE_SOURCE_DIR}/cmake/INSTALL_README")
-set(CPACK_RESOURCE_FILE_WELCOME     "${CMAKE_SOURCE_DIR}/cmake/welcome.txt")
+configure_file("cmake/CPackConfig.cmake.in" "${CMAKE_BINARY_DIR}/cmake/CPackConfig.cmake" @ONLY)
 
-set(CPACK_WIX_UPGRADE_GUID          "50973906-7EB6-4B48-950F-7F324FBCE557")
+include("${CMAKE_BINARY_DIR}/cmake/CPackConfig.cmake")
 
 include(CPack)
