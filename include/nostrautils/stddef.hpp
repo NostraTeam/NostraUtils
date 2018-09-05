@@ -21,13 +21,12 @@ within the library.
 
 The basic system for platform detection uses detectable attributes (such as a compiler) and values (also 
 called attribute identifiers) that those attributes may have. In other words, an attribute will always be 
-compared to a value that that attribute might have.
+compared to a value that such an attribute might have.
 
 The attributes are:
 <ul>
 	<li>compiler</li>
 	<li>operating system</li>
-	<li>operating system library (POSIX or Windows.h)</li>
 </ul>
 
 <b>Note:</b> This system does NOT use defined or undefined macros - all of the macros are always defined, but
@@ -81,30 +80,47 @@ This macro is always defined, to check if the current operating system is Linux,
 
 /**
 \brief 
-The operating system attribute identifier for Unix.
+The operating system attribute identifier for Cygwin.
 
 \details
-This macro is always defined, to check if the current operating system is Unix, use
+This macro is always defined, to check if the program is being compiled on the Cygwin platform, use
 \code{.cpp}
-#if NOU_OS == NOU_OS_UNIX
+#if NOU_OS == NOU_OS_CYGWIN
 \endcode
 */
-#ifndef NOU_OS_UNIX
-#define NOU_OS_UNIX 2
+#ifndef NOU_OS_CYGWIN
+#define NOU_OS_CYGWIN 2
+#endif
+
+/**
+\brief
+The operating system attribute identifier for MinGW.
+
+\details
+This macro is always defined, to check if the program is being compiled on the MinGW platform, use
+\code{.cpp}
+#if NOU_OS == NOU_OS_MINGW
+\endcode
+*/
+#ifndef NOU_OS_MINGW
+#define NOU_OS_MINGW 2
 #endif
 
 /**
 \brief 
-The operating system attribute identifier for Macintosh.
+The operating system attribute identifier for Mac OSX.
 
 \details
-This macro is always defined, to check if the current operating system is Macintosh, use
+This macro is always defined, to check if the current operating system is Mac OSX, use
 \code{.cpp}
 #if NOU_OS == NOU_OS_MAC
 \endcode
+
+\note
+As of now, NostraUtils does not support Mac OSX and this macro is only defined for future use.
 */
 #ifndef NOU_OS_MAC
-#define NOU_OS_MAC 2
+#define NOU_OS_MAC 4
 #endif
 
 /**
@@ -116,11 +132,12 @@ This macro is always defined, to check if the current operating system is unknow
 \code{.cpp}
 #if NOU_OS == NOU_OS_UNKNOWN
 \endcode
-An unknown operating system does not cause an error per-se, however, it may cause major problems (e.g. the
-value for NOU_OS_LIBRARY will not be set properly).
+An unknown operating system does not cause an error per-se, however, it may cause major problems because
+the library does not properly implement functionality for an unknown operating system and often an 
+<code>#error</code> directive will be triggered.
 */
 #ifndef NOU_OS_UNKNOWN
-#define NOU_OS_UNKNOWN 3
+#define NOU_OS_UNKNOWN 5
 #endif
 
 /**
@@ -132,7 +149,7 @@ This macro is always defined, but it does not serve any purpose when using the l
 doxygen generated the documentation, NOU_OS will be set to this attribute identifier.
 */
 #ifndef NOU_OS_DOXYGEN    
-#define NOU_OS_DOXYGEN 4
+#define NOU_OS_DOXYGEN 6
 #endif
 
 /**
@@ -156,11 +173,14 @@ value for NOU_OS_LIBRARY will not be set properly).
 #    elif defined __linux__
 #    define NOU_OS NOU_OS_LINUX
 
-#    elif defined __unix__
-#    define NOU_OS NOU_OS_UNIX
+#    elif defined __CYGWIN__
+#    define NOU_OS NOU_OS_CYGWIN
 
-#    elif defined __APPLE__
-#    define NOU_OS NOU_OS_MAC
+#    elif defined __MINGW32__
+#    define NOU_OS NOU_OS_MINGW
+
+//#    elif defined __APPLE__
+//#    define NOU_OS NOU_OS_MAC
 
 #    elif defined NOU_DOXYGEN //NOU_DOXYGEN is defined in the Doxyfile
 #    define NOU_OS NOU_OS_DOXYGEN
@@ -169,74 +189,6 @@ value for NOU_OS_LIBRARY will not be set properly).
 #    define NOU_OS NOU_OS_UNKNOWN
 
 #    endif
-#endif
-
-/**
-\brief 
-The operating system library attribute identifier for the Windows.h library.
-
-\details
-This macro is always defined, to check if the current operating system supports the Windows.h library, use
-\code{.cpp}
-#if NOU_OS_LIBRARY == NOU_OS_LIBRARY_WIN_H
-\endcode
-*/
-#ifndef NOU_OS_LIBRARY_WIN_H
-#define NOU_OS_LIBRARY_WIN_H 0
-#endif
-
-/**
-\brief 
-The operating system library attribute identifier for the POSIX library.
-
-\details
-This macro is always defined, to check if the current operating system supports the POSIX library, use
-\code{.cpp}
-#if NOU_OS_LIBRARY == NOU_OS_LIBRARY_POSIX
-\endcode
-*/
-#ifndef NOU_OS_LIBRARY_POSIX
-#define NOU_OS_LIBRARY_POSIX 1
-#endif
-
-/**
-\brief 
-The operating system library attribute identifier for the Doxygen documentation.
-
-\details
-This macro is always defined, but it does not serve any purpose when using the library. However, while
-doxygen generated the documentation, NOU_OS_LIBRARY will be set to this attribute identifier.
-*/
-#ifndef NOU_OS_LIBRARY_DOXYGEN    
-#define NOU_OS_LIBRARY_DOXYGEN 2
-#endif
-
-/**
-\brief 
-Defined as the attribute identifier of the currently used operating system library.
-
-\details
-To check for a certain library, use
-\code{.cpp}
-#if NOU_OS_LIBRARY == NOU_OS_LIBRARY_*
-\endcode
-and replace * with the library name.
-If there is no appropriate library available, a \#error directive will be triggered.
-*/
-#ifndef NOU_OS_LIBRARY
-#	if NOU_OS == NOU_OS_WINDOWS
-#	define NOU_OS_LIBRARY NOU_OS_LIBRARY_WIN_H
-
-#	elif NOU_OS == NOU_OS_LINUX || NOU_OS == NOU_OS_UNIX || NOU_OS == NOU_OS_MAC
-#	define NOU_OS_LIBRARY NOU_OS_LIBRARY_POSIX
-
-#   elif NOU_OS == NOU_OS_DOXYGEN
-#   define NOU_OS_LIBRARY NOU_OS_LIBRARY_DOXYGEN
-
-#	else
-#	error Both Windows.h and POSIX are not supported.
-
-#	endif
 #endif
 
 /**
@@ -264,7 +216,7 @@ This macro is always defined, to check if the current compiler is GNU GCC or g++
 \endcode
 */
 #ifndef NOU_COMPILER_GCC
-#define NOU_COMPILER_GCC        1
+#define NOU_COMPILER_GCC     1
 #endif						    
 
 /**
@@ -278,36 +230,7 @@ This macro is always defined, to check if the current compiler is Clang, use
 \endcode
 */
 #ifndef NOU_COMPILER_CLANG	    
-#define NOU_COMPILER_CLANG      2
-#endif						    
-
-/**
-\brief 
-The compiler attribute identifier for Intel C++.
-
-\details
-This macro is always defined, to check if the current compiler is Intel C++, use
-\code{.cpp}
-#if NOU_COMPILER == NOU_COMPILER_INTEL_CPP
-\endcode
-*/
-#ifndef NOU_COMPILER_INTEL_CPP  
-#define NOU_COMPILER_INTEL_CPP  3
-#endif						    
-
-/**
-\brief 
-The compiler attribute identifier for MinGW.
-
-\details
-This macro is always defined, to check if the current compiler is MinGW,
-use
-\code{.cpp}
-#if NOU_COMPILER == NOU_COMPILER_MIN_GW
-\endcode
-*/
-#ifndef NOU_COMPILER_MIN_GW	    
-#define NOU_COMPILER_MIN_GW     4
+#define NOU_COMPILER_CLANG   2
 #endif						    
 
 /**
@@ -320,10 +243,12 @@ This macro is always defined, to check if the current compiler is unknown, use
 #if NOU_COMPILER == NOU_COMPILER_UNKNOWN
 \endcode
 An unknown compiler does not cause an error per-se, however, it may cause major problems (e.g. the
-value of NOU_FUNC will not be set properly).
+value of NOU_FUNC will not be set properly). In addition to that, if the operating system is unknown, the 
+library compiles on a system that is not officially supported. In addition to that, if the compiler is 
+unknown, that compiler is not officially supported.
 */
 #ifndef NOU_COMPILER_UNKNOWN    
-#define NOU_COMPILER_UNKNOWN    5
+#define NOU_COMPILER_UNKNOWN 3
 #endif
 
 /**
@@ -336,7 +261,7 @@ purpose when using the library. However, while doxygen generated the documentati
 to this attribute identifier.
 */
 #ifndef NOU_COMPILER_DOXYGEN    
-#define NOU_COMPILER_DOXYGEN    6
+#define NOU_COMPILER_DOXYGEN 4
 #endif
 
 /**
@@ -358,15 +283,13 @@ and replace * with the compiler name.
 #    define NOU_COMPILER NOU_COMPILER_MSVC
 #    elif defined __GNUC__ 
 #    define NOU_COMPILER NOU_COMPILER_GCC
-#    elif defined __INTEL_COMPILER
-#    define NOU_COMPILER NOU_COMPILER_INTEL_CPP
-#    elif defined __MINGW32__
-#    define NOU_COMPILER NOU_COMPILER_MIN_GW
-#    elif defined __DOXYGEN__
+#    elif defined NOU_DOXYGEN
 #    define NOU_COMPILER NOU_COMPILER_DOXYGEN
 #    else 
 #    define NOU_COMPILER NOU_COMPILER_UNKNOWN
 #    endif
+
+#endif
 
 /**
 \brief 
@@ -428,8 +351,6 @@ not involve any user involvement.
 #    endif
 #endif
 
-#endif
-
 /**
 \param ... 
 The expression to convert.
@@ -471,12 +392,8 @@ on different platforms also produces the same result.
 #	define NOU_FUNC_NAME NOU_STRINGIFY(__PRETTY_FUNCTION__)
 #	elif NOU_COMPILER == NOU_COMPILER_CLANG
 #	define NOU_FUNC_NAME NOU_STRINGIFY(__PRETTY_FUNCTION__)
-#	elif NOU_COMPILER == NOU_COMPILER_INTEL_CPP
-#	define NOU_FUNC_NAME __func__ ///\Todo check
-#	elif NOU_COMPILER == NOU_COMPILER_MIN_GW
-#	define NOU_FUNC_NAME __func__ ///\Todo check
 #	elif NOU_COMPILER == NOU_COMPILER_DOXYGEN
-#	define NOU_FUNC_NAME __FUNCSIG__
+#	define NOU_FUNC_NAME <compiler dependent> //no proper value required
 #	else
 #	define NOU_FUNC_NAME __func__
 #	endif

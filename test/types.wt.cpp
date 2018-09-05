@@ -73,5 +73,5 @@ int main()
 
 	NOU_TEST_IS_TRUE(testFloatingPoint<nou::float64, 8>());
 
-	return 0;
+	return counter;
 }

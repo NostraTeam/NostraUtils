@@ -36,25 +36,6 @@ void printOperatingSystem()
 }
 
 /*
-If the current operating system library is Windows.h, the string "Windows.h" will be printed to the standard 
-output stream. If the operating system library is POSIX, the string "POSIX" will be printed to the standard 
-output stream. Since it is not possible to have any other operating system library, no <code>#else</code> 
-part is required.
-*/
-void printOperatingSystemLibrary()
-{
-#if NOU_OS_LIBRARY == NOU_OS_LIBRARY_WIN_H
-
-	std::cout << "Windows.h\n";
-
-#elif NOU_OS_LIBRARY == NOU_OS_LIBRARY_POSIX
-
-	std::cout << "POSIX\n";
-
-#endif
-}
-
-/*
 If the current compiler is MSVC, the string "MSVC" will be printed to the standard output stream. If the 
 compiler is GCC, the string "GCC" will be printed to the standard output stream. If another compiler is being
 used, "Other compiler" will be printed.
@@ -79,7 +60,6 @@ void printCompiler()
 int main()
 {
 	printOperatingSystem();
-	printOperatingSystemLibrary();
 	printCompiler();
 
 	std::cout << NOU_STRINGIFY(sometext) << "\n"; //NOU_STRINGIFY(sometext) expands to "sometext"
