@@ -13,7 +13,7 @@ include(CTest)
 
 configure_file("cmake/config.hpp.in" "include/nostrautils/config.hpp" @ONLY)
 
-list(APPEND NOU_SRC_FILES "src/test.cpp" "src/assert.cpp")
+list(APPEND NOU_SRC_FILES "src/assert.cpp")
 
 if(NOU_BUILD_SHARED)
 	add_library(NostraUtils SHARED ${NOU_SRC_FILES})
@@ -143,7 +143,6 @@ enable_testing()
 # Tests start
 if(BUILD_TESTING)
 	nou_add_test(cmakebuild.wt)
-	nou_add_test("test.wt")
 	nou_add_test(types.wt)
 	nou_add_test(stddef.wt)
 	nou_add_test(assert.wt)
