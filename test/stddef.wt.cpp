@@ -1,6 +1,6 @@
 
 /**
-File:          test.wt.cpp
+File:          stddef.wt.cpp
 Author:        Lukas Reichmann
 Creation Date: 04.09.2018 (dd.mm.yyyy)
 
@@ -8,14 +8,14 @@ A test for stddef. Tests most of the macros in that component to the degree that
 macros are not being tested at all because they are not testable.
 */
 
+#ifndef NOU_STDDEF_HPP
 #include "nostrautils/stddef.hpp"
+#endif
 
 #include <cstdlib>
 #include <cstring>
 
-static int counter = 0;
-
-#define NOU_TEST_IS_TRUE(...) if(__VA_ARGS__) {exit(counter);} else {counter++;}
+#define NOU_TEST_IS_TRUE(...) if(!(__VA_ARGS__)) {exit(__LINE__);}
 
 #define NOU_TEST_IS_EQUAL(a, b) NOU_TEST_IS_TRUE((a == b))
 
@@ -44,5 +44,5 @@ int main()
 	//WARNING: If any lines are added above, the right parameter of the next test case needs to be adjusted
 	NOU_TEST_IS_TRUE(std::strcmp(NOU_LINE_STRING, "45"));
 
-	return counter;
+	return 0;
 }

@@ -14,9 +14,7 @@ can be executed, this test only tests if the size of the single types match thei
 
 #include <cstdlib>
 
-static int counter = 0;
-
-#define NOU_TEST_IS_TRUE(...) if(__VA_ARGS__) {exit(counter);} else {counter++;}
+#define NOU_TEST_IS_TRUE(...) if(!(__VA_ARGS__)) {exit(__LINE__);}
 
 #define NOU_TEST_IS_EQUAL(a, b) NOU_TEST_IS_TRUE((a == b))
 
@@ -72,6 +70,4 @@ int main()
 	NOU_TEST_IS_TRUE(testFloatingPoint<nou::float32, 4>());
 
 	NOU_TEST_IS_TRUE(testFloatingPoint<nou::float64, 8>());
-
-	return counter;
 }

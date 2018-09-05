@@ -43,6 +43,10 @@ namespace nou
 	\code{.cpp}
 	nou::byte memory[sizeof(nou::int32)]; //allocate enough memory to hold a nou::int32 as a byte array
 	\endcode
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using byte = unsigned char;
 
@@ -52,72 +56,120 @@ namespace nou
 
 	\details
 	This types behaves the same way that the build-in type <code>bool</code> does.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using boolean = bool;
 
 	/**
 	\brief 
 	A datatype that can store 8-bit characters.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using char8 = char;
 
 	/**
 	\brief 
 	A datatype that can store 16-bit characters.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using char16 = char16_t;
 
 	/**
 	\brief 
 	A datatype that can store 32-bit characters.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using char32 = char32_t;
 
 	/**
 	\brief 
 	A datatype that can store 8-bit signed integers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using int8 = std::int8_t;
 
 	/**
 	\brief 
 	A datatype that can store 16-bit signed integers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using int16 = std::int16_t;
 
 	/**
 	\brief 
 	A datatype that can store 32-bit signed integers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using int32 = std::int32_t;
 
 	/**
 	\brief 
 	A datatype that can store 64-bit signed integers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using int64 = std::int64_t;
 
 	/**
 	\brief 
 	A datatype that can store 8-bit unsigned integers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using uint8 = std::uint8_t;
 
 	/**
 	\brief 
 	A datatype that can store 16-bit unsigned integers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using uint16 = std::uint16_t;
 
 	/**
 	\brief 
 	A datatype that can store 32-bit unsigned integers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using uint32 = std::uint32_t;
 
 	/**
 	\brief 
 	A datatype that can store 64-bit unsigned integers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using uint64 = std::uint64_t;
 
@@ -139,6 +191,10 @@ namespace nou
 		available types will be returned.
 
 		\see nou::internal::ChooseFloat_t
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
 		*/
 		template<int32 SIZE>
 		struct ChooseFloat :
@@ -155,6 +211,10 @@ namespace nou
 		Defined as the resulting type of nou::internal::ChooseFloat.
 
 		\see nou::internal::ChooseFloat
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
 		*/
 		template<int32 SIZE>
 		using ChooseFloat_t = typename ChooseFloat<SIZE>::type;
@@ -168,6 +228,10 @@ namespace nou
 	If the compiler does not provide a 32 bit floating point type, this type will either be the largest 
 	possible type, in the case that there are only smaller type, or, in the case that there are only larger 
 	types it will be the smallest available type.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using float32 = internal::ChooseFloat_t<4>;
 
@@ -179,6 +243,10 @@ namespace nou
 	If the compiler does not provide a 64 bit floating point type, this type will either be the largest
 	possible type, in the case that there are only smaller type, or, in the case that there are only larger
 	types it will be the smallest available type.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	using float64 = internal::ChooseFloat_t<8>;
 }

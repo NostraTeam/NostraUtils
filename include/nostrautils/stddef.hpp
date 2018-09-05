@@ -59,6 +59,10 @@ This macro is always defined, to check if the current operating system is Window
 \code{.cpp}
 #if NOU_OS == NOU_OS_WINDOWS
 \endcode
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_OS_WINDOWS
 #define NOU_OS_WINDOWS 0
@@ -73,6 +77,10 @@ This macro is always defined, to check if the current operating system is Linux,
 \code{.cpp}
 #if NOU_OS == NOU_OS_LINUX
 \endcode
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_OS_LINUX
 #define NOU_OS_LINUX 1
@@ -87,6 +95,10 @@ This macro is always defined, to check if the program is being compiled on the C
 \code{.cpp}
 #if NOU_OS == NOU_OS_CYGWIN
 \endcode
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_OS_CYGWIN
 #define NOU_OS_CYGWIN 2
@@ -101,6 +113,10 @@ This macro is always defined, to check if the program is being compiled on the M
 \code{.cpp}
 #if NOU_OS == NOU_OS_MINGW
 \endcode
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_OS_MINGW
 #define NOU_OS_MINGW 2
@@ -118,6 +134,10 @@ This macro is always defined, to check if the current operating system is Mac OS
 
 \note
 As of now, NostraUtils does not support Mac OSX and this macro is only defined for future use.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_OS_MAC
 #define NOU_OS_MAC 4
@@ -135,6 +155,10 @@ This macro is always defined, to check if the current operating system is unknow
 An unknown operating system does not cause an error per-se, however, it may cause major problems because
 the library does not properly implement functionality for an unknown operating system and often an 
 <code>#error</code> directive will be triggered.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_OS_UNKNOWN
 #define NOU_OS_UNKNOWN 5
@@ -147,6 +171,10 @@ The operating system attribute identifier for the Doxygen documentation.
 \details
 This macro is always defined, but it does not serve any purpose when using the library. However, while
 doxygen generated the documentation, NOU_OS will be set to this attribute identifier.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_OS_DOXYGEN    
 #define NOU_OS_DOXYGEN 6
@@ -165,6 +193,10 @@ and replace * with the operating system name.
 If the current operating system is unknown, the value will be NOU_OS_UNKNOWN.
 An unknown operating system does not cause an error per-se, however, it may cause major problems (e.g. the
 value for NOU_OS_LIBRARY will not be set properly).
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_OS
 #    ifdef _WIN32
@@ -200,6 +232,10 @@ This macro is always defined, to check if the current compiler is MVSC, use
 \code{.cpp}
 #if NOU_COMPILER == NOU_COMPILER_VISUAL_CPP
 \endcode
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_COMPILER_MSVC
 #define NOU_COMPILER_MSVC 0
@@ -214,6 +250,10 @@ This macro is always defined, to check if the current compiler is GNU GCC or g++
 \code{.cpp}
 #if NOU_COMPILER == NOU_COMPILER_GCC
 \endcode
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_COMPILER_GCC
 #define NOU_COMPILER_GCC     1
@@ -228,6 +268,10 @@ This macro is always defined, to check if the current compiler is Clang, use
 \code{.cpp}
 #if NOU_COMPILER == NOU_COMPILER_CLANG
 \endcode
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_COMPILER_CLANG	    
 #define NOU_COMPILER_CLANG   2
@@ -246,6 +290,10 @@ An unknown compiler does not cause an error per-se, however, it may cause major 
 value of NOU_FUNC will not be set properly). In addition to that, if the operating system is unknown, the 
 library compiles on a system that is not officially supported. In addition to that, if the compiler is 
 unknown, that compiler is not officially supported.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_COMPILER_UNKNOWN    
 #define NOU_COMPILER_UNKNOWN 3
@@ -259,6 +307,10 @@ The compiler attribute identifier for the Doxygen documentation.
 The compiler identifier for an Doxygen documentation. This macro is always defined, but it does not serve any
 purpose when using the library. However, while doxygen generated the documentation, NOU_COMPILER will be set 
 to this attribute identifier.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_COMPILER_DOXYGEN    
 #define NOU_COMPILER_DOXYGEN 4
@@ -274,6 +326,10 @@ To check for a certain compiler, use
 #if NOU_COMPILER == NOU_COMPILER_*
 \endcode
 and replace * with the compiler name.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_COMPILER
 
@@ -299,6 +355,10 @@ A macro that is used to export functions into shared libraries.
 Prefixing a function (or any exportable symbol) with this macro will cause it to be exported into a shared 
 library if one is being build. If a shared library is not being built, but this macro is still in use, it
 may cause problems.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_EXPORT_FUNC
 
@@ -318,6 +378,10 @@ A macro that is used to import functions a function from a library.
 Prefixing a function (or any exportable symbol) with this macro will cause it to be imported from a shared
 library if a library that is linked against contains the symbol. If no such symbol exists, but this macro is 
 still in use, it may cause problems.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_IMPORT_FUNC
 
@@ -338,6 +402,10 @@ This macro will import, if NOU_EXPORT_SYMBOLS is defined and export if it is not
 will behave correctly depending on whether a shared or static library is being build by using 
 NOU_EXPORT_SYMBOLS. Whether or not NOU_DLL and NOU_EXPORT_SYMBOLS are defined is handled by CMake and does 
 not involve any user involvement.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_FUNC
 #    ifdef NOU_BUILD_DLL
@@ -357,6 +425,10 @@ The expression to convert.
 
 \brief 
 Converts any expression into a const char[].
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_STRINGIFY
 #define NOU_STRINGIFY(...) #__VA_ARGS__
@@ -368,6 +440,10 @@ Returns the result of __LINE__ as a C-string.
 
 \details
 This additional macro is required, because simply using NOU_STRINGIFY(__LINE__) would not work.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_LINE_STRING
 ///\cond
@@ -383,6 +459,10 @@ Expands to a string literal with the function signature of the function that thi
 \note
 Although this macro is platform independent, it is not guaranteed that using this macro in the same function
 on different platforms also produces the same result.
+
+\author  Lukas Reichmann
+\version 1.1.0.0
+\since   1.1.0.0
 */
 #ifndef NOU_FUNC_NAME
 
