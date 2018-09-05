@@ -239,8 +239,6 @@ If there is no appropriate library available, a \#error directive will be trigge
 #	endif
 #endif
 
-#endif
-
 /**
 \brief 
 The compiler attribute identifier for MSVC.
@@ -482,5 +480,9 @@ on different platforms also produces the same result.
 #	else
 #	define NOU_FUNC_NAME __func__
 #	endif
+
+#endif
+
+
 
 #endif
