@@ -69,6 +69,8 @@ int main()
 
 	NOU_TEST_IS_EQUAL(sizeof(nou::uint64), 8);
 
+	NOU_TEST_IS_EQUAL(sizeof(nou::sizeType), sizeof(void*));
+
 	NOU_TEST_IS_TRUE(testFloatingPoint<nou::float32, 4>());
 
 	NOU_TEST_IS_TRUE(testFloatingPoint<nou::float64, 8>());

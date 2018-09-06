@@ -173,6 +173,26 @@ namespace nou
 	*/
 	using uint64 = std::uint64_t;
 
+	/**
+	\brief 
+	A signed integer type that has the same size as a pointer.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	using sizeType = std::size_t;
+
+	/**
+	\brief
+	The type of <code>nullptr</code>;
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	using nullptrType = decltype(nullptr);
+
 	namespace internal
 	{
 		/**
