@@ -185,13 +185,23 @@ namespace nou
 
 	/**
 	\brief
-	The type of <code>nullptr</code>;
+	The type of <code>nullptr</code>.
 
 	\author  Lukas Reichmann
 	\version 1.1.0.0
 	\since   1.1.0.0
 	*/
 	using nullptrType = decltype(nullptr);
+
+	/**
+	\brief
+	The type of the subtraction of two pointers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	using ptrdiffType = decltype(reinterpret_cast<int*>(0) - reinterpret_cast<int*>(0));
 
 	namespace internal
 	{
