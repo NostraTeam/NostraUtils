@@ -14,10 +14,14 @@ macros are not being tested at all because they are not testable.
 
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 
-#define NOU_TEST_IS_TRUE(...) if(!(__VA_ARGS__)) {exit(__LINE__);}
+#define NOU_TEST_IS_TRUE(...) if(!(__VA_ARGS__)) {std::cout << "Failed in line: " << __LINE__ << "\n"; \
+	exit(__LINE__);}
 
 #define NOU_TEST_IS_EQUAL(a, b) NOU_TEST_IS_TRUE((a == b))
+
+const nou::char8 *funcName;
 
 void assertCallbackSucceed(const nou::char8 *msg, const nou::char8 *fnName, nou::uint32 line,
 	const nou::char8 *file)
@@ -30,9 +34,9 @@ void assertCallbackSucceed(const nou::char8 *msg, const nou::char8 *fnName, nou:
 void assertCallbackFail(const nou::char8 *msg, const nou::char8 *fnName, nou::uint32 line,
 	const nou::char8 *file)
 {
-	NOU_TEST_IS_TRUE(std::strcmp(fnName, NOU_FUNC_NAME));
-	NOU_TEST_IS_EQUAL(line, 56);
-	NOU_TEST_IS_TRUE(std::strcmp(file, __FILE__));
+	NOU_TEST_IS_TRUE(std::strcmp(fnName, funcName) == 0);
+	NOU_TEST_IS_EQUAL(line, 62);
+	NOU_TEST_IS_TRUE(std::strcmp(file, __FILE__) == 0);
 }
 
 int main()
@@ -51,6 +55,8 @@ int main()
 
 	nou::AssertionSettings::callbackOnFail = assertCallbackFail;
 	nou::AssertionSettings::exitCode = 0; //the assertion should terminate the test; it is not an error
+
+	funcName = NOU_FUNC_NAME;
 
 	//fail assertion on purpose
 	NOU_ASSERT(false);

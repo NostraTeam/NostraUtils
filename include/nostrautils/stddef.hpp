@@ -199,10 +199,7 @@ value for NOU_OS_LIBRARY will not be set properly).
 \since   1.1.0.0
 */
 #ifndef NOU_OS
-#    ifdef _WIN32
-#    define NOU_OS NOU_OS_WINDOWS
-
-#    elif defined __linux__
+#    if defined __linux__
 #    define NOU_OS NOU_OS_LINUX
 
 #    elif defined __CYGWIN__
@@ -210,6 +207,9 @@ value for NOU_OS_LIBRARY will not be set properly).
 
 #    elif defined __MINGW32__
 #    define NOU_OS NOU_OS_MINGW
+
+#    elif defined _WIN32 //must be after MinGW and Cygwin
+#    define NOU_OS NOU_OS_WINDOWS
 
 //#    elif defined __APPLE__
 //#    define NOU_OS NOU_OS_MAC

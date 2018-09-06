@@ -142,7 +142,6 @@ enable_testing()
 
 # Tests start
 if(BUILD_TESTING)
-	nou_add_test(cmakebuild.wt)
 	nou_add_test(types.wt)
 	nou_add_test(stddef.wt)
 	nou_add_test(assert.wt)
