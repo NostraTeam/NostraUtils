@@ -29,6 +29,10 @@ target_include_directories(NostraUtils
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
 		"$<INSTALL_INTERFACE:include>")
 
+target_compile_features(NostraUtils
+	PUBLIC
+		cxx_std_17)
+
 target_compile_definitions(NostraUtils
 	PRIVATE
 		"NOU_EXPORT_SYMBOLS")
@@ -145,6 +149,7 @@ if(BUILD_TESTING)
 	nou_add_test(types.wt)
 	nou_add_test(stddef.wt)
 	nou_add_test(assert.wt)
+	nou_add_test(notnull.wt)
 endif()
 # Tests end
 
