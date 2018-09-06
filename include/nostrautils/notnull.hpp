@@ -229,6 +229,32 @@ namespace nou
 		*/
 		constexpr const RawType& operator * () const;
 
+		/**
+		\return
+		A reference to the object that is at the address of the wrapped pointer plus the offset.
+
+		\brief
+		Calls the subscript operator as if it was called directly on the wrapped pointer.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		inline RawType& operator [] (ptrdiffType offset);
+
+		/**
+		\return
+		A reference to the object that is at the address of the wrapped pointer plus the offset.
+
+		\brief
+		Calls the subscript operator as if it was called directly on the wrapped pointer.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr const RawType& operator [] (ptrdiffType offset) const;
+
 		NotNull& operator = (nullptrType) = delete;
 
 		/**
@@ -299,6 +325,18 @@ namespace nou
 	constexpr const typename NotNull<T>::RawType& NotNull<T>::operator * () const
 	{
 		return *m_ptr;
+	}
+
+	template<typename T>
+	inline typename NotNull<T>::RawType& NotNull<T>::operator [] (ptrdiffType offset)
+	{
+		return m_ptr[offset];
+	}
+
+	template<typename T>
+	constexpr const typename NotNull<T>::RawType& NotNull<T>::operator [] (ptrdiffType offset) const
+	{
+		return m_ptr[offset];
 	}
 
 	template<typename T>
