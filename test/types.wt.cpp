@@ -18,7 +18,7 @@ can be executed, this test only tests if the size of the single types match thei
 #define NOU_TEST_IS_TRUE(...) if(!(__VA_ARGS__)) {std::cout << "Failed in line: " << __LINE__ << "\n"; \
 	exit(__LINE__);}
 
-#define NOU_TEST_IS_EQUAL(a, b) NOU_TEST_IS_TRUE((a == b))
+#define NOU_TEST_IS_EQUAL(a, b) NOU_TEST_IS_TRUE(((a) == (b)))
 
 template<typename T, nou::int32 SIZE>
 nou::boolean testFloatingPoint()

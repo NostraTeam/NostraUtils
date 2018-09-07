@@ -19,7 +19,7 @@ macros are not being tested at all because they are not testable.
 #define NOU_TEST_IS_TRUE(...) if(!(__VA_ARGS__)) {std::cout << "Failed in line: " << __LINE__ << "\n"; \
 	exit(__LINE__);}
 
-#define NOU_TEST_IS_EQUAL(a, b) NOU_TEST_IS_TRUE((a == b))
+#define NOU_TEST_IS_EQUAL(a, b) NOU_TEST_IS_TRUE(((a) == (b)))
 
 int main()
 {

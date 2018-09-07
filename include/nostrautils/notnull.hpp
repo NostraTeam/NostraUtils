@@ -55,6 +55,82 @@ An example that demonstrates the usage of the notnull component.
 
 namespace nou
 {
+	namespace internal
+	{
+		/**
+		\tparam T
+		The type to convert.
+
+		\return
+		<code>const T</endcode>, even if \p T is a pointer type.
+
+		\brief
+		A meta function that adds <code>const</code> to a type, even if that type is a pointer.
+
+		\details
+		The 'return type' is stored in <code>Type</>.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		template<typename T>
+		struct NotNullMakeConstType
+		{
+			using Type = const T;
+		};
+
+		///\cond
+		//No need to have this specialization in the documentation
+		template<typename T>
+		struct NotNullMakeConstType<T*>
+		{
+			using Type = const T*;
+		};
+		///\endcond
+
+		/**
+		\tparam T
+		The type to convert.
+
+		\return
+		\p T& if \p T is not a pointer type, \p T if it is.
+
+		\brief 
+		A meta function that converts \p T into \p T& if \p T is not a pointer, or leaves \p T as-is if it is 
+		not a pointer type.
+
+		\details
+		The 'return type' is stored in <code>Type</>.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		template<typename T>
+		struct NotNullMakeRefType
+		{
+			/**
+			\brief
+			The 'return type' of this meta function.
+
+			\author  Lukas Reichmann
+			\version 1.1.0.0
+			\since   1.1.0.0
+			*/
+			using Type = T&;
+		};
+
+		///\cond
+		//No need to have this specialization in the documentation
+		template<typename T>
+		struct NotNullMakeRefType<T*>
+		{
+			using Type = T*;
+		};
+		///\endcond
+	}
+
 	/**
 	\tparam T 
 	The pointer type that this class wraps around. Not that, if e.g. this class should emulate an 
@@ -67,6 +143,10 @@ namespace nou
 	See notnull.hpp for a full description.
 
 	\see notnull.hpp
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
 	*/
 	template<typename T>
 	class NotNull final
@@ -81,6 +161,39 @@ namespace nou
 		\since   1.1.0.0
 		*/
 		using Type = T;
+		
+		/**
+		\brief
+		The same type as <code>Type</code>, <code>const</code>.
+
+		\details
+		<b>Example:</b> 
+		If <code>Type</code> is <code>nou::int32*</code>, then <code>ConstType</code> is 
+		<code>const nou::int32*</code>.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		using ConstType = typename internal::NotNullMakeConstType<Type>::Type;
+
+		/**
+		\brief
+		Depending on the <code>ConstType</code>, this is <code>ConstType&</code> or just 
+		<code>ConstType</code> (see details).
+
+		\details
+		<b>Example:</b>
+		If <code>ConstType</code> is a pointer type, then <code>ConstTypeRef</code> is
+		<code>ConstTypeRef</code>. If <code>ConstType</code> is any other type, then 
+		<code>ConstTypeRef</code> is <code>ConstTypeRef&</code>.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		using ConstTypeRef = typename internal::NotNullMakeRefType<ConstType>::Type;
+
 	private:
 		/**
 		\brief
@@ -175,7 +288,7 @@ namespace nou
 		\version 1.1.0.0
 		\since   1.1.0.0
 		*/
-		constexpr const Type& rawPtr() const;
+		constexpr ConstTypeRef rawPtr() const;
 
 		/**
 		\return
@@ -201,7 +314,7 @@ namespace nou
 		\version 1.1.0.0
 		\since   1.1.0.0
 		*/
-		constexpr const Type& operator -> () const;
+		constexpr ConstTypeRef operator -> () const;
 
 		/**
 		\return
@@ -230,6 +343,9 @@ namespace nou
 		constexpr const RawType& operator * () const;
 
 		/**
+		\param offset
+		The offset of the object to access. This values is in multiples of the size of the raw type.
+
 		\return
 		A reference to the object that is at the address of the wrapped pointer plus the offset.
 
@@ -243,6 +359,9 @@ namespace nou
 		inline RawType& operator [] (ptrdiffType offset);
 
 		/**
+		\param offset
+		The offset of the object to access. This values is in multiples of the size of the raw type.
+
 		\return
 		A reference to the object that is at the address of the wrapped pointer plus the offset.
 
@@ -254,6 +373,314 @@ namespace nou
 		\since   1.1.0.0
 		*/
 		constexpr const RawType& operator [] (ptrdiffType offset) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance and the wrapped pointer of the passed instance
+		are equal, false if not.
+
+		\brief
+		Compares two pointers on equality.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator == (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance and passed pointer, false if not.
+
+		\brief
+		Compares two pointers on equality.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator == (ConstTypeRef other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		False, if the wrapped pointer of the calling instance and the wrapped pointer of the passed instance
+		are equal, true if not.
+
+		\brief
+		Compares two pointers on inequality.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator != (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		False, if the wrapped pointer of the calling instance and passed pointer, true if not.
+
+		\brief
+		Compares two pointers on inequality.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator != (ConstTypeRef other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance is smaller than the wrapped pointer of the 
+		passed instance, true if not.
+
+		\brief
+		Compares two pointers.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator < (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance is smaller than the wrapped pointer of the
+		passed instance, true if not.
+
+		\brief
+		Compares two pointers.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator < (ConstTypeRef other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance is larger than the wrapped pointer of the
+		passed instance, true if not.
+
+		\brief
+		Compares two pointers.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator > (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance is larger than the wrapped pointer of the
+		passed instance, true if not.
+
+		\brief
+		Compares two pointers.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator > (ConstTypeRef other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance is smaller than or equal to the wrapped pointer 
+		of the passed instance, true if not.
+
+		\brief
+		Compares two pointers.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator <= (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance is smaller than or equal to the wrapped pointer 
+		of the passed instance, true if not.
+
+		\brief
+		Compares two pointers.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator <= (ConstTypeRef other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance is larger than or equal to the wrapped pointer 
+		of the passed instance, true if not.
+
+		\brief
+		Compares two pointers.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator >= (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to compare to.
+
+		\return
+		True, if the wrapped pointer of the calling instance is larger than or equal to the wrapped pointer 
+		of the passed instance, true if not.
+
+		\brief
+		Compares two pointers.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator >= (ConstTypeRef other) const;
+
+		/**
+		\return
+		<code>false</code>.
+
+		\brief
+		Returns whether the wrapped pointer is <code>nullptr</code>, which is obviously always false.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator ! () const;
+
+		/**
+		\param other
+		The pointer to apply the AND operation with.
+
+		\return
+		<code>true</code>.
+
+		\brief
+		Applies a logical AND operation on the two pointers.
+
+		\details
+		This function always returns <code>true</code>, because, per definition, both operands are never
+		<code>nullptr</code>.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator && (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to apply the AND operation with.
+
+		\return
+		<code>true</code> if \p other is not <code>nullptr</code> and false if it is.
+
+		\brief
+		Applies a logical AND operation on the two pointers.
+
+		\details
+		This function only depends on \p other, since the instance that the operator is called on can never
+		be <code>nullptr</code>.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator && (ConstTypeRef other) const;
+
+		/**
+		\param other
+		The pointer to apply the OR operation with.
+
+		\return
+		<code>true</code>.
+
+		\brief
+		Applies a logical OR operation on the two pointers.
+
+		\details
+		This function always returns <code>true</code>, because, per definition, both operands are never
+		<code>nullptr</code>.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator || (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to apply the OR operation with.
+
+		\return
+		<code>true</code>.
+
+		\brief
+		Applies a logical OR operation on the two pointers.
+
+		\details
+		This function always returns <code>true</code>, because, per definition, the left operand is never
+		<code>nullptr</code>.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr boolean operator || (ConstTypeRef other) const;
+
+		/**
+		\return
+		<code>true</code>.
+
+		\brief
+		Returns whether the wrapped pointer is not <code>nullptr</code>, which is obviously always true.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr operator boolean () const;
 
 		NotNull& operator = (nullptrType) = delete;
 
@@ -298,7 +725,7 @@ namespace nou
 	}
 
 	template<typename T>
-	constexpr const typename NotNull<T>::Type& NotNull<T>::rawPtr() const
+	constexpr typename NotNull<T>::ConstTypeRef NotNull<T>::rawPtr() const
 	{
 		return m_ptr;
 	}
@@ -310,7 +737,7 @@ namespace nou
 	}
 
 	template<typename T>
-	constexpr const typename NotNull<T>::Type& NotNull<T>::operator -> () const
+	constexpr typename NotNull<T>::ConstTypeRef NotNull<T>::operator -> () const
 	{
 		return m_ptr;
 	}
@@ -337,6 +764,114 @@ namespace nou
 	constexpr const typename NotNull<T>::RawType& NotNull<T>::operator [] (ptrdiffType offset) const
 	{
 		return m_ptr[offset];
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator == (const NotNull &other) const
+	{
+		return m_ptr == other.m_ptr;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator == (ConstTypeRef other) const
+	{
+		return m_ptr == other;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator != (const NotNull &other) const
+	{
+		return m_ptr != other.m_ptr;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator != (ConstTypeRef other) const
+	{
+		return m_ptr != other;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator < (const NotNull<T> &other) const
+	{
+		return m_ptr < other.m_ptr;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator < (ConstTypeRef other) const
+	{
+		return m_ptr < other;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator > (const NotNull<T> &other) const
+	{
+		return m_ptr > other.m_ptr;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator > (ConstTypeRef other) const
+	{
+		return m_ptr > other;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator <= (const NotNull<T> &other) const
+	{
+		return m_ptr <= other.m_ptr;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator <= (ConstTypeRef other) const
+	{
+		return m_ptr <= other;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator >= (const NotNull<T> &other) const
+	{
+		return m_ptr >= other.m_ptr;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator >= (ConstTypeRef other) const
+	{
+		return m_ptr >= other;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator ! () const
+	{
+		return false;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator && (const NotNull &other) const
+	{
+		return true;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator && (ConstTypeRef other) const
+	{
+		return other;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator || (const NotNull &other) const
+	{
+		return true;
+	}
+
+	template<typename T>
+	constexpr boolean NotNull<T>::operator || (ConstTypeRef other) const
+	{
+		return true;
+	}
+
+	template<typename T>
+	constexpr NotNull<T>::operator boolean () const
+	{
+		return true;
 	}
 
 	template<typename T>
