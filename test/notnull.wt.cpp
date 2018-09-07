@@ -125,12 +125,23 @@ int main()
 		NOU_TEST_IS_EQUAL(nullptr  || notNull1, true);
 		//logical end
 
+		//increment/decrement start
+		notNull1 = i3;
+		nou::int32 *i3Ptr = i3;
+
+		NOU_TEST_IS_EQUAL((notNull1++).rawPtr(), i3Ptr++);
+		NOU_TEST_IS_EQUAL((notNull1--).rawPtr(), i3Ptr--);
+		NOU_TEST_IS_EQUAL((++notNull1).rawPtr(), ++i3Ptr);
+		NOU_TEST_IS_EQUAL((--notNull1).rawPtr(), --i3Ptr);
+		//increment/decrement start
+
 		Test test1(5);
 
 		//arrow
 		nou::NotNull<Test*> notNull3(&test1);
 		NOU_TEST_IS_EQUAL(notNull3->getA(), test1.getA());
 	}
+
 
 
 	//constexpr part

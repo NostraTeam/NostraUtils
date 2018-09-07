@@ -685,6 +685,66 @@ namespace nou
 		*/
 		constexpr operator boolean () const;
 
+		/**
+		\return
+		A reference to the instance that the operator was called on.
+
+		\brief 
+		Increments the wrapped pointer by one.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		inline NotNull& operator ++ ();
+
+		/**
+		\return
+		A reference to the instance that the operator was called on.
+
+		\brief
+		Decrements the wrapped pointer by one.
+
+		\warning
+		For performance reasons, this operator does not check whether the wrapped pointer will be
+		<code>nullptr</code> after the decrementation.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		inline NotNull& operator -- ();
+
+		/**
+		\return
+		A copy of the instance from before the incrementation took place.
+
+		\brief
+		Increments the wrapped pointer by one.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		inline NotNull& operator ++ (int);
+
+		/**
+		\return
+		A copy of the instance from before the incrementation took place.
+
+		\brief
+		Decrements the wrapped pointer by one.
+
+		\warning
+		For performance reasons, this operator does not check whether the wrapped pointer will be 
+		<code>nullptr</code> after the decrementation.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		inline NotNull& operator -- (int);
+
 		NotNull& operator = (nullptrType) = delete;
 
 		/**
@@ -692,7 +752,7 @@ namespace nou
 		The pointer that will be wrapped. Must not be <code>nullptr</code>.
 
 		\return
-		A reference to instance that the operator was called on.
+		A reference to the instance that the operator was called on.
 
 		\brief
 		Sets the wrapped pointer to the passed one.
@@ -1047,6 +1107,42 @@ namespace nou
 	}
 
 	template<typename T>
+	inline NotNull<T>& NotNull<T>::operator ++ ()
+	{
+		++m_ptr;
+
+		return *this;
+	}
+
+	template<typename T>
+	inline NotNull<T>& NotNull<T>::operator -- ()
+	{
+		--m_ptr;
+
+		return *this;
+	}
+
+	template<typename T>
+	inline NotNull<T>& NotNull<T>::operator ++ (int)
+	{
+		NotNull<T> ret = *this;
+
+		++m_ptr;
+
+		return ret;
+	}
+
+	template<typename T>
+	inline NotNull<T>& NotNull<T>::operator -- (int)
+	{
+		NotNull<T> ret = *this;
+
+		--m_ptr;
+
+		return ret;
+	}
+
+	template<typename T>
 	inline NotNull<T>& NotNull<T>::operator = (Type ptr)
 	{
 		m_ptr = ptr;
@@ -1055,6 +1151,7 @@ namespace nou
 
 		return *this;
 	}
+
 
 
 	template<typename T>
