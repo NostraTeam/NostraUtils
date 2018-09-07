@@ -379,8 +379,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance and the wrapped pointer of the passed instance
-		are equal, false if not.
+		<code>true</code>, if the wrapped pointer of the calling instance and the wrapped pointer of the 
+		passed instance are equal, <code>false</code> if not.
 
 		\brief
 		Compares two pointers on equality.
@@ -396,7 +396,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance and passed pointer, false if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is equal to the passed pointer, 
+		<code>false</code> if not.
 
 		\brief
 		Compares two pointers on equality.
@@ -413,7 +414,7 @@ namespace nou
 
 		\return
 		False, if the wrapped pointer of the calling instance and the wrapped pointer of the passed instance
-		are equal, true if not.
+		are equal, <code>true</code> if not.
 
 		\brief
 		Compares two pointers on inequality.
@@ -429,7 +430,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		False, if the wrapped pointer of the calling instance and passed pointer, true if not.
+		False, if the wrapped pointer of the calling instance is equal to the passed pointer, 
+		<code>true</code> if not.
 
 		\brief
 		Compares two pointers on inequality.
@@ -445,8 +447,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance is smaller than the wrapped pointer of the 
-		passed instance, true if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is smaller than the wrapped pointer 
+		of the passed instance, <code>true</code> if not.
 
 		\brief
 		Compares two pointers.
@@ -462,8 +464,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance is smaller than the wrapped pointer of the
-		passed instance, true if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is smaller than the passed pointer, 
+		<code>true</code> if not.
 
 		\brief
 		Compares two pointers.
@@ -479,8 +481,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance is larger than the wrapped pointer of the
-		passed instance, true if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is larger than the wrapped pointer 
+		of the passed instance, <code>true</code> if not.
 
 		\brief
 		Compares two pointers.
@@ -496,8 +498,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance is larger than the wrapped pointer of the
-		passed instance, true if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is larger than the passed pointer, 
+		<code>true</code> if not.
 
 		\brief
 		Compares two pointers.
@@ -513,8 +515,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance is smaller than or equal to the wrapped pointer 
-		of the passed instance, true if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is smaller than or equal to the 
+		wrapped pointer of the passed instance, <code>true</code> if not.
 
 		\brief
 		Compares two pointers.
@@ -530,8 +532,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance is smaller than or equal to the wrapped pointer 
-		of the passed instance, true if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is smaller than or equal to the 
+		passed pointer, <code>true</code> if not.
 
 		\brief
 		Compares two pointers.
@@ -547,8 +549,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance is larger than or equal to the wrapped pointer 
-		of the passed instance, true if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is larger than or equal to the 
+		wrapped pointer of the passed instance, <code>true</code> if not.
 
 		\brief
 		Compares two pointers.
@@ -564,8 +566,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		True, if the wrapped pointer of the calling instance is larger than or equal to the wrapped pointer 
-		of the passed instance, true if not.
+		<code>true</code>, if the wrapped pointer of the calling instance is larger than or equal to the 
+		passed pointer, <code>true</code> if not.
 
 		\brief
 		Compares two pointers.
@@ -581,7 +583,8 @@ namespace nou
 		<code>false</code>.
 
 		\brief
-		Returns whether the wrapped pointer is <code>nullptr</code>, which is obviously always false.
+		Returns whether the wrapped pointer is <code>nullptr</code>, which is obviously always 
+		<code>false</code>.
 
 		\author  Lukas Reichmann
 		\version 1.1.0.0
@@ -614,7 +617,7 @@ namespace nou
 		The pointer to apply the AND operation with.
 
 		\return
-		<code>true</code> if \p other is not <code>nullptr</code> and false if it is.
+		<code>true</code> if \p other is not <code>nullptr</code> and <code>false</code> if it is.
 
 		\brief
 		Applies a logical AND operation on the two pointers.
@@ -703,6 +706,175 @@ namespace nou
 		*/
 		inline NotNull& operator = (Type ptr);
 	};
+
+	/**
+	\param other
+	The pointer to compare to.
+
+	\param notNull
+	The nou::NotNull instance.
+
+	\return
+	<code>true</code>, if the wrapped pointer of \p notNull is equal to \p other, <code>false</code> if not.
+
+	\brief
+	Compares two pointers on equality.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr boolean operator == (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
+
+	/**
+	\param other
+	The pointer to compare to.
+
+	\param notNull
+	The nou::NotNull instance.
+
+	\return
+	<code>false</code>, if the wrapped pointer of \p notNull is equal to \p other, <code>true</code> if not.
+
+	\brief
+	Compares two pointers on inequality.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr boolean operator != (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
+
+	/**
+	\param other
+	The pointer to compare to.
+
+	\param notNull
+	The nou::NotNull instance.
+
+	\return
+	<code>true</code>, if \p other is smaller than the wrapped pointer of \p notNull, true if not.
+
+	\brief
+	Compares two pointers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr boolean operator < (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
+
+	/**
+	\param other
+	The pointer to compare to.
+
+	\param notNull
+	The nou::NotNull instance.
+
+	\return
+	<code>true</code>, if \p other is larger than the wrapped pointer of \p notNull, true if not.
+
+	\brief
+	Compares two pointers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr boolean operator > (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
+
+	/**
+	\param other
+	The pointer to compare to.
+
+	\param notNull
+	The nou::NotNull instance.
+
+	\return
+	<code>true</code>, if \p other is smaller than or equal to the wrapped pointer of \p notNull, true if 
+	not.
+
+	\brief
+	Compares two pointers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr boolean operator <= (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
+
+	/**
+	\param other
+	The pointer to compare to.
+
+	\param notNull
+	The nou::NotNull instance.
+
+	\return
+	<code>true</code>, if \p other is larger than or equal to the wrapped pointer of \p notNull, true if not.
+
+	\brief
+	Compares two pointers.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr boolean operator >= (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
+
+	/**
+	\param other
+	The pointer to apply the AND operation with.
+
+	\param notNull
+	The nou::NotNull instance.
+
+	\return
+	<code>true</code> if \p other is not <code>nullptr</code> and <code>false</code> if it is.
+
+	\brief
+	Applies a logical AND operation on the two pointers.
+
+	\details
+	This function only depends on \p other, since the instance that the operator is called on can never
+	be <code>nullptr</code>.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr boolean operator && (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
+
+	/**
+	\param other
+	The pointer to apply the OR operation with.
+
+	\param notNull
+	The nou::NotNull instance.
+
+	\return
+	<code>true</code>.
+
+	\brief
+	Applies a logical OR operation on the two pointers.
+
+	\details
+	This function always returns <code>true</code>, because, per definition, the right operand is never
+	<code>nullptr</code>.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr boolean operator || (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
 
 	template<typename T>
 	constexpr void NotNull<T>::checkNull() const
@@ -882,6 +1054,55 @@ namespace nou
 		checkNull();
 
 		return *this;
+	}
+
+
+	template<typename T>
+	constexpr boolean operator == (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
+	{
+		return other == notNull.rawPtr();
+	}
+
+	template<typename T>
+	constexpr boolean operator != (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
+	{
+		return other != notNull.rawPtr();
+	}
+
+	template<typename T>
+	constexpr boolean operator < (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
+	{
+		return other < notNull.rawPtr();
+	}
+
+	template<typename T>
+	constexpr boolean operator > (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
+	{
+		return other > notNull.rawPtr();
+	}
+
+	template<typename T>
+	constexpr boolean operator <= (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
+	{
+		return other <= notNull.rawPtr();
+	}
+
+	template<typename T>
+	constexpr boolean operator >= (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
+	{
+		return other >= notNull.rawPtr();
+	}
+
+	template<typename T>
+	constexpr boolean operator && (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
+	{
+		return other;
+	}
+
+	template<typename T>
+	constexpr boolean operator || (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
+	{
+		return true;
 	}
 }
 

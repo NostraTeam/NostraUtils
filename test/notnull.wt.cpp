@@ -68,36 +68,61 @@ int main()
 		const nou::NotNull<nou::int32*> notNull2 = &i2;
 
 		NOU_TEST_IS_EQUAL(notNull1 == notNull1, true);
+		NOU_TEST_IS_EQUAL(notNull1 == notNull1, true);
 		NOU_TEST_IS_EQUAL(notNull1 != notNull1, false);
-		NOU_TEST_IS_EQUAL(notNull1 < notNull1, false);
-		NOU_TEST_IS_EQUAL(notNull1 > notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 != notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 <  notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 <  notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 >  notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 >  notNull1, false);
 		NOU_TEST_IS_EQUAL(notNull1 <= notNull1, true);
+		NOU_TEST_IS_EQUAL(notNull1 <= notNull1, true);
+		NOU_TEST_IS_EQUAL(notNull1 >= notNull1, true);
 		NOU_TEST_IS_EQUAL(notNull1 >= notNull1, true);
 
 		NOU_TEST_IS_EQUAL(notNull1 == notNull2, &i1 == &i2);
+		NOU_TEST_IS_EQUAL(notNull2 == notNull1, &i2 == &i1);
 		NOU_TEST_IS_EQUAL(notNull1 != notNull2, &i1 != &i2);
-		NOU_TEST_IS_EQUAL(notNull1 < notNull2, &i1 < &i2);
-		NOU_TEST_IS_EQUAL(notNull1 > notNull2, &i1 > &i2);
+		NOU_TEST_IS_EQUAL(notNull2 != notNull1, &i2 != &i1);
+		NOU_TEST_IS_EQUAL(notNull1 <  notNull2, &i1 <  &i2);
+		NOU_TEST_IS_EQUAL(notNull2 >  notNull1, &i2 >  &i1);
+		NOU_TEST_IS_EQUAL(notNull1 >  notNull2, &i1 >  &i2);
+		NOU_TEST_IS_EQUAL(notNull2 >  notNull1, &i2 >  &i1);
 		NOU_TEST_IS_EQUAL(notNull1 <= notNull2, &i1 <= &i2);
+		NOU_TEST_IS_EQUAL(notNull2 <= notNull1, &i2 <= &i1);
 		NOU_TEST_IS_EQUAL(notNull1 >= notNull2, &i1 >= &i2);
+		NOU_TEST_IS_EQUAL(notNull2 >= notNull1, &i2 >= &i1);
 
-		NOU_TEST_IS_EQUAL(notNull1 == &i4, &i1 == &i4);
-		NOU_TEST_IS_EQUAL(notNull1 != &i4, &i1 != &i4);
-		NOU_TEST_IS_EQUAL(notNull1 < &i4, &i1 < &i4);
-		NOU_TEST_IS_EQUAL(notNull1 > &i4, &i1 > &i4);
-		NOU_TEST_IS_EQUAL(notNull1 <= &i4, &i1 <= &i4);
-		NOU_TEST_IS_EQUAL(notNull1 >= &i4, &i1 >= &i4);
+		NOU_TEST_IS_EQUAL(notNull1 == &i4,      &i1 == &i4);
+		NOU_TEST_IS_EQUAL(&i4      == notNull1, &i4 == &i1);
+		NOU_TEST_IS_EQUAL(notNull1 != &i4,      &i1 != &i4);
+		NOU_TEST_IS_EQUAL(&i4      != notNull1, &i4 != &i1);
+		NOU_TEST_IS_EQUAL(notNull1 < &i4,       &i1 <  &i4);
+		NOU_TEST_IS_EQUAL(&i4      < notNull1,  &i4 <  &i1);
+		NOU_TEST_IS_EQUAL(notNull1 > &i4,       &i1 >  &i4);
+		NOU_TEST_IS_EQUAL(&i4      > notNull1,  &i4 >  &i1);
+		NOU_TEST_IS_EQUAL(notNull1 <= &i4,      &i1 <= &i4);
+		NOU_TEST_IS_EQUAL(&i4      <= notNull1, &i4 <= &i1);
+		NOU_TEST_IS_EQUAL(notNull1 >= &i4,      &i1 >= &i4);
+		NOU_TEST_IS_EQUAL(&i4      >= notNull1, &i4 >= &i1);
 		//comparison end
 
 		//logical start
 		NOU_TEST_IS_EQUAL(notNull1, true);
 		NOU_TEST_IS_EQUAL(!notNull1, false);
+
 		NOU_TEST_IS_EQUAL(notNull1 && notNull2, true);
-		NOU_TEST_IS_EQUAL(notNull1 && &i1, true);
-		NOU_TEST_IS_EQUAL(notNull1 && nullptr, false);
+		NOU_TEST_IS_EQUAL(notNull1 && &i1,      true);
+		NOU_TEST_IS_EQUAL(notNull1 && nullptr,  false);
+		NOU_TEST_IS_EQUAL(notNull2 && notNull1, true);
+		NOU_TEST_IS_EQUAL(&i1      && notNull1, true);
+		NOU_TEST_IS_EQUAL(nullptr  && notNull1, false);
 		NOU_TEST_IS_EQUAL(notNull1 || notNull2, true);
-		NOU_TEST_IS_EQUAL(notNull1 || &i1, true);
-		NOU_TEST_IS_EQUAL(notNull1 || nullptr, true);
+		NOU_TEST_IS_EQUAL(notNull1 || &i1,      true);
+		NOU_TEST_IS_EQUAL(notNull1 || nullptr,  true);
+		NOU_TEST_IS_EQUAL(notNull2 || notNull1, true);
+		NOU_TEST_IS_EQUAL(&i1      || notNull1, true);
+		NOU_TEST_IS_EQUAL(nullptr  || notNull1, true);
 		//logical end
 
 		Test test1(5);
@@ -134,36 +159,61 @@ int main()
 		const nou::NotNull<const nou::int32*> notNull2 = &i2;
 
 		NOU_TEST_IS_EQUAL(notNull1 == notNull1, true);
+		NOU_TEST_IS_EQUAL(notNull1 == notNull1, true);
 		NOU_TEST_IS_EQUAL(notNull1 != notNull1, false);
-		NOU_TEST_IS_EQUAL(notNull1 < notNull1, false);
-		NOU_TEST_IS_EQUAL(notNull1 > notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 != notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 <  notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 <  notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 >  notNull1, false);
+		NOU_TEST_IS_EQUAL(notNull1 >  notNull1, false);
 		NOU_TEST_IS_EQUAL(notNull1 <= notNull1, true);
+		NOU_TEST_IS_EQUAL(notNull1 <= notNull1, true);
+		NOU_TEST_IS_EQUAL(notNull1 >= notNull1, true);
 		NOU_TEST_IS_EQUAL(notNull1 >= notNull1, true);
 
 		NOU_TEST_IS_EQUAL(notNull1 == notNull2, &i1 == &i2);
+		NOU_TEST_IS_EQUAL(notNull2 == notNull1, &i2 == &i1);
 		NOU_TEST_IS_EQUAL(notNull1 != notNull2, &i1 != &i2);
-		NOU_TEST_IS_EQUAL(notNull1 < notNull2, &i1 < &i2);
-		NOU_TEST_IS_EQUAL(notNull1 > notNull2, &i1 > &i2);
+		NOU_TEST_IS_EQUAL(notNull2 != notNull1, &i2 != &i1);
+		NOU_TEST_IS_EQUAL(notNull1 <  notNull2, &i1 <  &i2);
+		NOU_TEST_IS_EQUAL(notNull2 >  notNull1, &i2 >  &i1);
+		NOU_TEST_IS_EQUAL(notNull1 >  notNull2, &i1 >  &i2);
+		NOU_TEST_IS_EQUAL(notNull2 >  notNull1, &i2 >  &i1);
 		NOU_TEST_IS_EQUAL(notNull1 <= notNull2, &i1 <= &i2);
+		NOU_TEST_IS_EQUAL(notNull2 <= notNull1, &i2 <= &i1);
 		NOU_TEST_IS_EQUAL(notNull1 >= notNull2, &i1 >= &i2);
+		NOU_TEST_IS_EQUAL(notNull2 >= notNull1, &i2 >= &i1);
 
 		NOU_TEST_IS_EQUAL(notNull1 == &i4, &i1 == &i4);
+		NOU_TEST_IS_EQUAL(&i4 == notNull1, &i4 == &i1);
 		NOU_TEST_IS_EQUAL(notNull1 != &i4, &i1 != &i4);
-		NOU_TEST_IS_EQUAL(notNull1 < &i4, &i1 < &i4);
-		NOU_TEST_IS_EQUAL(notNull1 > &i4, &i1 > &i4);
+		NOU_TEST_IS_EQUAL(&i4 != notNull1, &i4 != &i1);
+		NOU_TEST_IS_EQUAL(notNull1 < &i4, &i1 <  &i4);
+		NOU_TEST_IS_EQUAL(&i4      < notNull1, &i4 <  &i1);
+		NOU_TEST_IS_EQUAL(notNull1 > &i4, &i1 >  &i4);
+		NOU_TEST_IS_EQUAL(&i4      > notNull1, &i4 >  &i1);
 		NOU_TEST_IS_EQUAL(notNull1 <= &i4, &i1 <= &i4);
+		NOU_TEST_IS_EQUAL(&i4 <= notNull1, &i4 <= &i1);
 		NOU_TEST_IS_EQUAL(notNull1 >= &i4, &i1 >= &i4);
+		NOU_TEST_IS_EQUAL(&i4 >= notNull1, &i4 >= &i1);
 		//comparison end
 
 		//logical start
 		NOU_TEST_IS_EQUAL(notNull1, true);
 		NOU_TEST_IS_EQUAL(!notNull1, false);
+
 		NOU_TEST_IS_EQUAL(notNull1 && notNull2, true);
 		NOU_TEST_IS_EQUAL(notNull1 && &i1, true);
 		NOU_TEST_IS_EQUAL(notNull1 && nullptr, false);
+		NOU_TEST_IS_EQUAL(notNull2 && notNull1, true);
+		NOU_TEST_IS_EQUAL(&i1      && notNull1, true);
+		NOU_TEST_IS_EQUAL(nullptr  && notNull1, false);
 		NOU_TEST_IS_EQUAL(notNull1 || notNull2, true);
 		NOU_TEST_IS_EQUAL(notNull1 || &i1, true);
 		NOU_TEST_IS_EQUAL(notNull1 || nullptr, true);
+		NOU_TEST_IS_EQUAL(notNull2 || notNull1, true);
+		NOU_TEST_IS_EQUAL(&i1 || notNull1, true);
+		NOU_TEST_IS_EQUAL(nullptr || notNull1, true);
 		//logical end
 
 		static constexpr Test test1(5);
