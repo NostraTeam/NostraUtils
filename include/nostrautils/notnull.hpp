@@ -726,7 +726,7 @@ namespace nou
 		\version 1.1.0.0
 		\since   1.1.0.0
 		*/
-		inline NotNull& operator ++ (int);
+		inline NotNull operator ++ (int);
 
 		/**
 		\return
@@ -743,7 +743,71 @@ namespace nou
 		\version 1.1.0.0
 		\since   1.1.0.0
 		*/
-		inline NotNull& operator -- (int);
+		inline NotNull operator -- (int);
+
+		/**
+		\param offset
+		The value to add to the wrapped pointer.
+
+		\return
+		A new instance that is incremented by \p offset.
+
+		\brief
+		Increments the wrapped pointer by \p offset and returns the value in a new instance.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr NotNull operator + (ptrdiffType offset) const;
+
+		/**
+		\param other
+		The pointer to subtract.
+
+		\return
+		The value of the wrapped pointer minus the passed one.
+
+		\brief
+		Subtracts two pointers from each other.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr ptrdiffType operator - (const NotNull &other) const;
+
+		/**
+		\param other
+		The pointer to subtract.
+
+		\return
+		The value of the wrapped pointer minus the passed one.
+
+		\brief
+		Subtracts two pointers from each other.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr ptrdiffType operator - (ConstTypeRef other) const;
+
+		/**
+		\param offset
+		The value to subtract from the wrapped pointer.
+
+		\return
+		A new instance that is decremented by \p offset.
+
+		\brief
+		Decrements the wrapped pointer by \p offset and returns the value in a new instance.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		constexpr NotNull operator - (ptrdiffType offset) const;
 
 		NotNull& operator = (nullptrType) = delete;
 
@@ -936,6 +1000,48 @@ namespace nou
 	template<typename T>
 	constexpr boolean operator || (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull);
 
+	/**
+	\param offset
+	The value to add to.
+
+	\param notNull
+	The pointer to add.
+
+	\return
+	An instance that has a wrapped pointer with the value \p offset plus the wrapped pointer of \p notNull.
+
+	\brief
+	Increments the wrapped pointer by \p offset and returns the value in a new instance.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr NotNull<T> operator + (ptrdiffType offset, NotNull<T> &notNull);
+
+	/**
+	\param offset
+	The value to add to.
+
+	\param notNull
+	The pointer to add.
+
+	\return
+	An instance that has a wrapped pointer with the value \p offset plus the wrapped pointer of \p notNull.
+
+	\brief
+	Increments the wrapped pointer by \p offset and returns the value in a new instance.
+
+	\author  Lukas Reichmann
+	\version 1.1.0.0
+	\since   1.1.0.0
+	*/
+	template<typename T>
+	constexpr const NotNull<T> operator + (ptrdiffType offset, const NotNull<T> &notNull);
+
+
+
 	template<typename T>
 	constexpr void NotNull<T>::checkNull() const
 	{
@@ -1123,7 +1229,7 @@ namespace nou
 	}
 
 	template<typename T>
-	inline NotNull<T>& NotNull<T>::operator ++ (int)
+	inline NotNull<T> NotNull<T>::operator ++ (int)
 	{
 		NotNull<T> ret = *this;
 
@@ -1133,13 +1239,37 @@ namespace nou
 	}
 
 	template<typename T>
-	inline NotNull<T>& NotNull<T>::operator -- (int)
+	inline NotNull<T> NotNull<T>::operator -- (int)
 	{
 		NotNull<T> ret = *this;
 
 		--m_ptr;
 
 		return ret;
+	}
+
+	template<typename T>
+	constexpr NotNull<T> NotNull<T>::operator + (ptrdiffType offset) const
+	{
+		return NotNull<T>(m_ptr + offset);
+	}
+
+	template<typename T>
+	constexpr ptrdiffType NotNull<T>::operator - (const NotNull &other) const
+	{
+		return m_ptr - other.m_ptr;
+	}
+
+	template<typename T>
+	constexpr ptrdiffType NotNull<T>::operator - (ConstTypeRef other) const
+	{
+		return m_ptr - other;
+	}
+
+	template<typename T>
+	constexpr NotNull<T> NotNull<T>::operator - (ptrdiffType offset) const
+	{
+		return NotNull<T>(m_ptr - offset);
 	}
 
 	template<typename T>
@@ -1200,6 +1330,18 @@ namespace nou
 	constexpr boolean operator || (typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
 	{
 		return true;
+	}
+
+	template<typename T>
+	constexpr NotNull<T> operator + (ptrdiffType offset, NotNull<T> &notNull) 
+	{
+		return NotNull<T>(offset + notNull.rawPtr());
+	}
+
+	template<typename T>
+	constexpr const NotNull<T> operator + (ptrdiffType offset, const NotNull<T> &notNull)
+	{
+		return NotNull<T>(offset + notNull.rawPtr());
 	}
 }
 

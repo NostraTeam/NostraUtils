@@ -14,6 +14,7 @@ are some parts in the component that should trigger a compile error, this is tes
 
 #include <cstdlib>
 #include <iostream>
+#include <string>
 
 #define NOU_TEST_IS_TRUE(...) if(!(__VA_ARGS__)) {std::cout << "Failed in line: " << __LINE__ << "\n"; \
 	exit(__LINE__);}
@@ -135,14 +136,27 @@ int main()
 		NOU_TEST_IS_EQUAL((--notNull1).rawPtr(), --i3Ptr);
 		//increment/decrement start
 
+		//arithmetic start
+		notNull1 = &i1;
+
+		NOU_TEST_IS_EQUAL(notNull1 +       10, &i1      + 10);
+		NOU_TEST_IS_EQUAL(10       + notNull1, 10       + &i1);
+		NOU_TEST_IS_EQUAL(notNull1 - 10,       &i1      - 10);
+		NOU_TEST_IS_EQUAL(notNull1 - notNull1, notNull1 - notNull1);
+		NOU_TEST_IS_EQUAL(notNull1 - notNull1, notNull1 - notNull1);
+		NOU_TEST_IS_EQUAL(notNull1 - notNull2, notNull1 - notNull2);
+		NOU_TEST_IS_EQUAL(notNull2 - notNull1, notNull2 - notNull1);
+		NOU_TEST_IS_EQUAL(notNull1 - &i1,      notNull1 - &i1);
+		NOU_TEST_IS_EQUAL(notNull1 - &i1,      notNull1 - &i1);
+		NOU_TEST_IS_EQUAL(notNull1 - &i2,      notNull1 - &i2);
+		//arithmetic end
+
 		Test test1(5);
 
 		//arrow
 		nou::NotNull<Test*> notNull3(&test1);
 		NOU_TEST_IS_EQUAL(notNull3->getA(), test1.getA());
 	}
-
-
 
 	//constexpr part
 	{
@@ -196,17 +210,17 @@ int main()
 		NOU_TEST_IS_EQUAL(notNull2 >= notNull1, &i2 >= &i1);
 
 		NOU_TEST_IS_EQUAL(notNull1 == &i4, &i1 == &i4);
-		NOU_TEST_IS_EQUAL(&i4 == notNull1, &i4 == &i1);
+		NOU_TEST_IS_EQUAL(&i4      == notNull1, &i4 == &i1);
 		NOU_TEST_IS_EQUAL(notNull1 != &i4, &i1 != &i4);
-		NOU_TEST_IS_EQUAL(&i4 != notNull1, &i4 != &i1);
+		NOU_TEST_IS_EQUAL(&i4      != notNull1, &i4 != &i1);
 		NOU_TEST_IS_EQUAL(notNull1 < &i4, &i1 <  &i4);
 		NOU_TEST_IS_EQUAL(&i4      < notNull1, &i4 <  &i1);
 		NOU_TEST_IS_EQUAL(notNull1 > &i4, &i1 >  &i4);
 		NOU_TEST_IS_EQUAL(&i4      > notNull1, &i4 >  &i1);
 		NOU_TEST_IS_EQUAL(notNull1 <= &i4, &i1 <= &i4);
-		NOU_TEST_IS_EQUAL(&i4 <= notNull1, &i4 <= &i1);
+		NOU_TEST_IS_EQUAL(&i4      <= notNull1, &i4 <= &i1);
 		NOU_TEST_IS_EQUAL(notNull1 >= &i4, &i1 >= &i4);
-		NOU_TEST_IS_EQUAL(&i4 >= notNull1, &i4 >= &i1);
+		NOU_TEST_IS_EQUAL(&i4      >= notNull1, &i4 >= &i1);
 		//comparison end
 
 		//logical start
@@ -223,9 +237,22 @@ int main()
 		NOU_TEST_IS_EQUAL(notNull1 || &i1, true);
 		NOU_TEST_IS_EQUAL(notNull1 || nullptr, true);
 		NOU_TEST_IS_EQUAL(notNull2 || notNull1, true);
-		NOU_TEST_IS_EQUAL(&i1 || notNull1, true);
-		NOU_TEST_IS_EQUAL(nullptr || notNull1, true);
+		NOU_TEST_IS_EQUAL(&i1      || notNull1, true);
+		NOU_TEST_IS_EQUAL(nullptr  || notNull1, true);
 		//logical end
+		
+		//arithmetic start
+		NOU_TEST_IS_EQUAL(notNull1 +       10, &i1      + 10);
+		NOU_TEST_IS_EQUAL(10       + notNull1, 10       + &i1);
+		NOU_TEST_IS_EQUAL(notNull1 - 10,       &i1      - 10);
+		NOU_TEST_IS_EQUAL(notNull1 - notNull1, notNull1 - notNull1);
+		NOU_TEST_IS_EQUAL(notNull1 - notNull1, notNull1 - notNull1);
+		NOU_TEST_IS_EQUAL(notNull1 - notNull2, notNull1 - notNull2);
+		NOU_TEST_IS_EQUAL(notNull2 - notNull1, notNull2 - notNull1);
+		NOU_TEST_IS_EQUAL(notNull1 - &i1,      notNull1 - &i1);
+		NOU_TEST_IS_EQUAL(notNull1 - &i1,      notNull1 - &i1);
+		NOU_TEST_IS_EQUAL(notNull1 - &i2,      notNull1 - &i2);
+		//arithmetic end
 
 		static constexpr Test test1(5);
 
