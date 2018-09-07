@@ -829,6 +829,38 @@ namespace nou
 		\since   1.1.0.0
 		*/
 		inline NotNull& operator = (Type ptr);
+
+		/**
+		\param offset
+		The value to add to the wrapped pointer.
+
+		\return
+		A reference to the instance that the operator was called on.
+
+		\brief
+		Increments the wrapped pointer by \p offset.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		inline NotNull& operator += (ptrdiffType offset);
+
+		/**
+		\param offset
+		The value to subtract from the wrapped pointer.
+
+		\return
+		A reference to the instance that the operator was called on.
+
+		\brief
+		Decrements the wrapped pointer by \p offset.
+
+		\author  Lukas Reichmann
+		\version 1.1.0.0
+		\since   1.1.0.0
+		*/
+		inline NotNull& operator -= (ptrdiffType offset);
 	};
 
 	/**
@@ -1276,6 +1308,26 @@ namespace nou
 	inline NotNull<T>& NotNull<T>::operator = (Type ptr)
 	{
 		m_ptr = ptr;
+
+		checkNull();
+
+		return *this;
+	}
+
+	template<typename T>
+	inline NotNull<T>& NotNull<T>::operator += (ptrdiffType offset)
+	{
+		m_ptr += offset;
+
+		checkNull();
+
+		return *this;
+	}
+
+	template<typename T>
+	inline NotNull<T>& NotNull<T>::operator -= (ptrdiffType offset)
+	{
+		m_ptr -= offset;
 
 		checkNull();
 

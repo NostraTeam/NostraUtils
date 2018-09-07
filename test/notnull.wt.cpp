@@ -8,6 +8,10 @@ A test for notnull. Tests all of the functions in the component that are testabl
 are some parts in the component that should trigger a compile error, this is tested in another test).
 */
 
+#ifndef NOU_TYPES_HPP
+#include "nostrautils/types.hpp"
+#endif
+
 #ifndef NOU_NOTNULL_HPP
 #include "nostrautils/notnull.hpp"
 #endif
@@ -150,6 +154,13 @@ int main()
 		NOU_TEST_IS_EQUAL(notNull1 - &i1,      notNull1 - &i1);
 		NOU_TEST_IS_EQUAL(notNull1 - &i2,      notNull1 - &i2);
 		//arithmetic end
+
+		//assign start
+		nou::int32 *i1Cpy = &i1;
+
+		NOU_TEST_IS_EQUAL(notNull1 += 10, i1Cpy += 10);
+		NOU_TEST_IS_EQUAL(notNull1 -= 10, i1Cpy -= 10);
+		//assign end
 
 		Test test1(5);
 
