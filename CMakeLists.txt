@@ -171,6 +171,7 @@ endfunction()
 if(NOU_BUILD_EXAMPLES)
 	nou_add_example(stddef.ex)
 	nou_add_example(assert.ex)
+	nou_add_example(notnull.ex)
 endif()
 # Examples end
 

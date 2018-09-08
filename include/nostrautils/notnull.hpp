@@ -19,6 +19,11 @@ is attempted.
 
 Other than that, instances of <code>nou::NotNull</code> will behave like a regular pointer.
 
+This behavior can optimize code, because it does not require additional, redundant checks if a pointer is 
+<code>nullptr</code> - except for the initial check of course. In addition to that, it makes finding bugs 
+far easier, since whenever a <code>nullptr</code> is set, the class will trigger an error when the pointer is
+set and not when it is accessed.
+
 <b>Example:</b>
 \code{.cpp}
 int main()
@@ -34,7 +39,9 @@ For a more detailed example, see \link notnull.ex.cpp here\endlink.
 
 <code>nou::NotNull</code> supports <code>constexpr</code> whenever possible. If <code>nullptr</code> is 
 assigned to an instance in a case that would usually trigger a runtime error, a compile error is triggered
-instead. 
+instead. In that case, the compiler will most likely fail with a message that says something like: 
+"expression did not evaluate to a constant" (this is the error that MSVC prints). This is the intended 
+behavior.
 
 \note
 <code>nou::NotNull</code> on its own is not a smart pointer - it does not prevent a user from copying 
@@ -62,13 +69,13 @@ namespace nou
 		The type to convert.
 
 		\return
-		<code>const T</endcode>, even if \p T is a pointer type.
+		<code>const T</code>, even if \p T is a pointer type.
 
 		\brief
 		A meta function that adds <code>const</code> to a type, even if that type is a pointer.
 
 		\details
-		The 'return type' is stored in <code>Type</>.
+		The 'return type' is stored in <code>Type</code>.
 
 		\author  Lukas Reichmann
 		\version 1.1.0.0
@@ -77,6 +84,14 @@ namespace nou
 		template<typename T>
 		struct NotNullMakeConstType
 		{
+			/**
+			\brief
+			The 'return type' of this meta function.
+
+			\author  Lukas Reichmann
+			\version 1.1.0.0
+			\since   1.1.0.0
+			*/
 			using Type = const T;
 		};
 
@@ -101,7 +116,7 @@ namespace nou
 		not a pointer type.
 
 		\details
-		The 'return type' is stored in <code>Type</>.
+		The 'return type' is stored in <code>Type</code>.
 
 		\author  Lukas Reichmann
 		\version 1.1.0.0
@@ -164,10 +179,10 @@ namespace nou
 		
 		/**
 		\brief
-		The same type as <code>Type</code>, <code>const</code>.
+		The same type as <code>Type</code>, but <code>const</code>.
 
 		\details
-		<b>Example:</b> 
+		<b>Example:</b> <br>
 		If <code>Type</code> is <code>nou::int32*</code>, then <code>ConstType</code> is 
 		<code>const nou::int32*</code>.
 
@@ -183,10 +198,10 @@ namespace nou
 		<code>ConstType</code> (see details).
 
 		\details
-		<b>Example:</b>
+		<b>Example:</b> <br>
 		If <code>ConstType</code> is a pointer type, then <code>ConstTypeRef</code> is
-		<code>ConstTypeRef</code>. If <code>ConstType</code> is any other type, then 
-		<code>ConstTypeRef</code> is <code>ConstTypeRef&</code>.
+		<code>ConstType</code>. If <code>ConstType</code> is any other type, then 
+		<code>ConstTypeRef</code> is <code>ConstType&</code>.
 
 		\author  Lukas Reichmann
 		\version 1.1.0.0
@@ -221,7 +236,7 @@ namespace nou
 		The type that the wrapped pointer points to.
 
 		\details
-		<b>Example:</b>
+		<b>Example:</b> <br>
 		<code>nou::NotNull<nou::int32*>::RawType</code> is <code>nou::int32</code>.
 
 		\author  Lukas Reichmann
@@ -260,15 +275,11 @@ namespace nou
 		\details
 		This function is supposed to enable compatibility with other functions that required a raw pointer.
 
-		\warning
-		This function could be exploited to bypass the <code>nullptr</code> check of this class. This is 
-		strongly advised against.
-
 		\author  Lukas Reichmann
 		\version 1.1.0.0
 		\since   1.1.0.0
 		*/
-		inline Type& rawPtr();
+		inline Type rawPtr();
 
 		/**
 		\return
@@ -279,10 +290,6 @@ namespace nou
 
 		\details
 		This function is supposed to enable compatibility with other functions that required a raw pointer.
-
-		\warning
-		This function could be exploited to bypass the <code>nullptr</code> check of this class. This is
-		strongly advised against.
 
 		\author  Lukas Reichmann
 		\version 1.1.0.0
@@ -413,8 +420,8 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		False, if the wrapped pointer of the calling instance and the wrapped pointer of the passed instance
-		are equal, <code>true</code> if not.
+		<code>false</code>, if the wrapped pointer of the calling instance and the wrapped pointer of the 
+		passed instance are equal, <code>true</code> if not.
 
 		\brief
 		Compares two pointers on inequality.
@@ -430,7 +437,7 @@ namespace nou
 		The pointer to compare to.
 
 		\return
-		False, if the wrapped pointer of the calling instance is equal to the passed pointer, 
+		<code>false</code>, if the wrapped pointer of the calling instance is equal to the passed pointer, 
 		<code>true</code> if not.
 
 		\brief
@@ -603,7 +610,7 @@ namespace nou
 		Applies a logical AND operation on the two pointers.
 
 		\details
-		This function always returns <code>true</code>, because, per definition, both operands are never
+		This function always returns <code>true</code>, because, by definition, both operands are never
 		<code>nullptr</code>.
 
 		\author  Lukas Reichmann
@@ -868,7 +875,7 @@ namespace nou
 	The pointer to compare to.
 
 	\param notNull
-	The nou::NotNull instance.
+	The <code>nou::NotNull</code> instance.
 
 	\return
 	<code>true</code>, if the wrapped pointer of \p notNull is equal to \p other, <code>false</code> if not.
@@ -888,7 +895,7 @@ namespace nou
 	The pointer to compare to.
 
 	\param notNull
-	The nou::NotNull instance.
+	The <code>nou::NotNull</code> instance.
 
 	\return
 	<code>false</code>, if the wrapped pointer of \p notNull is equal to \p other, <code>true</code> if not.
@@ -908,7 +915,7 @@ namespace nou
 	The pointer to compare to.
 
 	\param notNull
-	The nou::NotNull instance.
+	The <code>nou::NotNull</code> instance.
 
 	\return
 	<code>true</code>, if \p other is smaller than the wrapped pointer of \p notNull, true if not.
@@ -928,7 +935,7 @@ namespace nou
 	The pointer to compare to.
 
 	\param notNull
-	The nou::NotNull instance.
+	The <code>nou::NotNull</code> instance.
 
 	\return
 	<code>true</code>, if \p other is larger than the wrapped pointer of \p notNull, true if not.
@@ -948,7 +955,7 @@ namespace nou
 	The pointer to compare to.
 
 	\param notNull
-	The nou::NotNull instance.
+	The <code>nou::NotNull</code> instance.
 
 	\return
 	<code>true</code>, if \p other is smaller than or equal to the wrapped pointer of \p notNull, true if 
@@ -969,7 +976,7 @@ namespace nou
 	The pointer to compare to.
 
 	\param notNull
-	The nou::NotNull instance.
+	The <code>nou::NotNull</code> instance.
 
 	\return
 	<code>true</code>, if \p other is larger than or equal to the wrapped pointer of \p notNull, true if not.
@@ -989,7 +996,7 @@ namespace nou
 	The pointer to apply the AND operation with.
 
 	\param notNull
-	The nou::NotNull instance.
+	The <code>nou::NotNull</code> instance.
 
 	\return
 	<code>true</code> if \p other is not <code>nullptr</code> and <code>false</code> if it is.
@@ -1013,7 +1020,7 @@ namespace nou
 	The pointer to apply the OR operation with.
 
 	\param notNull
-	The nou::NotNull instance.
+	The <code>nou::NotNull</code> instance.
 
 	\return
 	<code>true</code>.
@@ -1089,7 +1096,7 @@ namespace nou
 	}
 
 	template<typename T>
-	inline typename NotNull<T>::Type& NotNull<T>::rawPtr()
+	inline typename NotNull<T>::Type NotNull<T>::rawPtr()
 	{
 		return m_ptr;
 	}
