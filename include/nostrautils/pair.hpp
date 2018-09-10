@@ -175,7 +175,7 @@ namespace nou
         */
         template<typename OA, typename OB>
         Pair(Pair<OA, OB> &&other);
-
+        
         /**
         \tparam N
         The index of the value to get. Must be either <code>0</code> or <code>1</code>.
@@ -275,8 +275,8 @@ namespace nou
     \version 1.1.0.0
     \since   1.1.0.0
     */
-    template<typename A, typename B>
-    Pair<A, B> pair(const A &first, const B &second);
+    //template<typename A, typename B>
+    //Pair<A, B> pair(const A &first, const B &second);
 
     ///**
     //\param first
@@ -365,7 +365,7 @@ namespace nou
     template<typename A, typename B>
     Pair<A, B>::Pair(Pair<A, B> &&other) : Pair(static_cast<A&&>(other.first), static_cast<B&&>(other.second))
     {}
-
+    
     template<typename A, typename B>
     template<typename OA, typename OB>
     Pair<A, B>::Pair(const Pair<OA, OB> &other) : Pair(other.first, other.second)
@@ -425,15 +425,15 @@ namespace nou
 
         return *this;
     }
+    
 
-
-
+/*
     template<typename A, typename B>
     Pair<A, B> pair(const A &first, const B &second)
     {
         return Pair<A, B>(first, second);
     }
-/*
+
     template<typename A, typename B>
     Pair<A, B> pair(const A &first, B &&second)
     {
