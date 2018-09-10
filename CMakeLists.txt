@@ -150,6 +150,7 @@ if(BUILD_TESTING)
 	nou_add_test(stddef.wt)
 	nou_add_test(assert.wt)
 	nou_add_test(notnull.wt)
+	nou_add_test(pair.wt)
 endif()
 # Tests end
 
