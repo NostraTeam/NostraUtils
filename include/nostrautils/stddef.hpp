@@ -32,7 +32,7 @@ The attributes are:
 <b>Note:</b> This system does NOT use defined or undefined macros - all of the macros are always defined, but
 the value that the attributes expand to changes.
 
-<b>Example:</b>
+\par_example
 \code{.cpp}
 #if NOU_OS == NOU_OS_LINUX
 	//This will only get compiled when compiling under Linux
@@ -154,7 +154,7 @@ This macro is always defined, to check if the current operating system is unknow
 \endcode
 An unknown operating system does not cause an error per-se, however, it may cause major problems because
 the library does not properly implement functionality for an unknown operating system and often an 
-<code>#error</code> directive will be triggered.
+\ilc{\#error} directive will be triggered.
 
 \author  Lukas Reichmann
 \version 1.1.0.0
