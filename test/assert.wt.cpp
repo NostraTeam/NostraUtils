@@ -43,7 +43,7 @@ void assertCallbackFail(const nou::char8 *msg,
                         const nou::char8 *file)
 {
     NOU_TEST_IS_TRUE(std::strcmp(fnName, funcName) == 0);
-    NOU_TEST_IS_EQUAL(line, 62);
+    NOU_TEST_IS_EQUAL(line, 70);
     NOU_TEST_IS_TRUE(std::strcmp(file, __FILE__) == 0);
 }
 

@@ -48,6 +48,10 @@ int main()
     // set the exit code that is used when the behavior exitOnFail is triggered; by default this is -1
     nou::AssertionSettings::exitCode = 5;
 
+    // exits the program using abort(); by default this is always disabled
+    // Note that during this example, abort() will never be called since exit() will be called first
+    nou::AssertionSettings::abortOnFail = true;
+
     someFunction(5);  // assertion fails
     someFunction(10); // assertion succeeds
 }

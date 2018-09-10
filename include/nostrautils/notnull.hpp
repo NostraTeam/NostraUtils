@@ -10,21 +10,20 @@
 
 \brief
 A component that provides a wrapper for (smart-) pointer types that prevents the wrapped pointer to be set to
-<code>nullptr</code>.
+\ilc{nullptr}.
 
 \details
-If a user attempts to assign a <code>nullptr</code> to an instance of <code>nou::NotNull</code>, that
-instance will either trigger a compile error (whenever possible) or a runtime error as soon as the assignment
-is attempted.
+If a user attempts to assign a \ilc{nullptr} to an instance of \ilc{nou::NotNull}, that instance will either
+trigger a compile error (whenever possible) or a runtime error as soon as the assignment is attempted.
 
-Other than that, instances of <code>nou::NotNull</code> will behave like a regular pointer.
+Other than that, instances of \ilc{nou::NotNull} will behave like a regular pointer.
 
 This behavior can optimize code, because it does not require additional, redundant checks if a pointer is
-<code>nullptr</code> - except for the initial check of course. In addition to that, it makes finding bugs
-far easier, since whenever a <code>nullptr</code> is set, the class will trigger an error when the pointer is
-set and not when it is accessed.
+\ilc{nullptr} - except for the initial check of course. In addition to that, it makes finding bugs far
+easier, since whenever a \ilc{nullptr} is set, the class will trigger an error when the pointer is set and
+not when it is accessed.
 
-<b>Example:</b>
+\par_example
 \code{.cpp}
 int main()
 {
@@ -37,15 +36,14 @@ int main()
 
 For a more detailed example, see \link notnull.ex.cpp here\endlink.
 
-<code>nou::NotNull</code> supports <code>constexpr</code> whenever possible. If <code>nullptr</code> is
-assigned to an instance in a case that would usually trigger a runtime error, a compile error is triggered
-instead. In that case, the compiler will most likely fail with a message that says something like:
-"expression did not evaluate to a constant" (this is the error that MSVC prints). This is the intended
-behavior.
+\ilc{nou::NotNull} supports \ilc{constexpr} whenever possible. If \ilc{nullptr} is assigned to an instance in
+a case that would usually trigger a runtime error, a compile error is triggered instead. In that case, the
+compiler will most likely fail with a message that says something like: "expression did not evaluate to a
+constant" (this is the error that MSVC prints). This is the intended behavior.
 
 \note
-<code>nou::NotNull</code> on its own is not a smart pointer - it does not prevent a user from copying
-pointers nor does it any memory management.
+\ilc{nou::NotNull} on its own is not a smart pointer - it does not prevent a user from copying pointers nor
+does it any memory management.
 */
 
 /**
@@ -69,13 +67,13 @@ namespace nou
         The type to convert.
 
         \return
-        <code>const T</code>, even if \p T is a pointer type.
+        \ilc{const T}, even if \p T is a pointer type.
 
         \brief
-        A meta function that adds <code>const</code> to a type, even if that type is a pointer.
+        A meta function that adds \ilc{const} to a type, even if that type is a pointer.
 
         \details
-        The 'return type' is stored in <code>Type</code>.
+        The 'return type' is stored in \ilc{Type}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -116,7 +114,7 @@ namespace nou
         not a pointer type.
 
         \details
-        The 'return type' is stored in <code>Type</code>.
+        The 'return type' is stored in \ilc{Type}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -149,11 +147,10 @@ namespace nou
     /**
     \tparam T
     The pointer type that this class wraps around. Not that, if e.g. this class should emulate an
-    <code>int*</code>, this type needs to be <code>int*</code> as well, not just <code>int</code>.
+    \ilc{nou::int32*}, this type needs to be \ilc{nou::int32*} as well, not just \ilc{nou::int32}.
 
     \brief
-    A class that wraps around a pointer and prevents that pointer from becoming <code>nullptr</code>.
-    
+    A class that wraps around a pointer and prevents that pointer from becoming \ilc{nullptr}.
 
     \details
     See notnull.hpp for a full description.
@@ -180,12 +177,12 @@ namespace nou
 
         /**
         \brief
-        The same type as <code>Type</code>, but <code>const</code>.
+        The same type as \ilc{Type}, but \ilc{const}.
 
         \details
-        <b>Example:</b> <br>
-        If <code>Type</code> is <code>nou::int32*</code>, then <code>ConstType</code> is
-        <code>const nou::int32*</code>.
+        \par_example
+        If \ilc{Type} is \ilc{nou::int32*}, then \ilc{ConstType} is
+        \ilc{const nou::int32*}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -195,14 +192,14 @@ namespace nou
 
         /**
         \brief
-        Depending on the <code>ConstType</code>, this is <code>ConstType&</code> or just
-        <code>ConstType</code> (see details).
+        Depending on the \ilc{ConstType}, this is \ilc{ConstType&} or just
+        \ilc{ConstType} (see details).
 
         \details
-        <b>Example:</b> <br>
-        If <code>ConstType</code> is a pointer type, then <code>ConstTypeRef</code> is
-        <code>ConstType</code>. If <code>ConstType</code> is any other type, then
-        <code>ConstTypeRef</code> is <code>ConstType&</code>.
+        \par_example
+        If \ilc{ConstType} is a pointer type, then \ilc{ConstTypeRef} is
+        \ilc{ConstType}. If \ilc{ConstType} is any other type, then
+        \ilc{ConstTypeRef} is \ilc{ConstType&}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -214,7 +211,6 @@ namespace nou
         /**
         \brief
         The pointer that is being wrapped.
-        
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -224,7 +220,7 @@ namespace nou
 
         /**
         \brief
-        Calls <code>abort()</code> if <code>m_ptr</code> is <code>nullptr</code>.
+        Calls \ilc{\::abort()} if \ilc{m_ptr} is \ilc{nullptr}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -238,8 +234,8 @@ namespace nou
         The type that the wrapped pointer points to.
 
         \details
-        <b>Example:</b> <br>
-        <code>nou::NotNull<nou::int32*>::RawType</code> is <code>nou::int32</code>.
+        \par_example
+        \ilc{nou::NotNull<nou::int32*>::RawType} is \ilc{nou::int32}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -253,13 +249,13 @@ namespace nou
 
         /**
         \param ptr
-        The pointer that will be wrapped. Must not be <code>nullptr</code>.
+        The pointer that will be wrapped. Must not be \ilc{nullptr}.
 
         \brief
         Constructs a new instance that wraps the passed pointer.
 
         \details
-        If \p ptr is <code>nullptr</code>, <code>::abort()</code> will be called.
+        If \p ptr is \ilc{nullptr}, \ilc{\::abort()} will be called.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -388,8 +384,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance and the wrapped pointer of the
-        passed instance are equal, <code>false</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance and the wrapped pointer of the passed
+        instance are equal, \ilc{false} if not.
 
         \brief
         Compares two pointers on equality.
@@ -405,8 +401,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is equal to the passed pointer,
-        <code>false</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is equal to the passed pointer,
+        \ilc{false} if not.
 
         \brief
         Compares two pointers on equality.
@@ -422,8 +418,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>false</code>, if the wrapped pointer of the calling instance and the wrapped pointer of the
-        passed instance are equal, <code>true</code> if not.
+        \ilc{false}, if the wrapped pointer of the calling instance and the wrapped pointer of the passed
+        instance are equal, \ilc{true} if not.
 
         \brief
         Compares two pointers on inequality.
@@ -439,8 +435,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>false</code>, if the wrapped pointer of the calling instance is equal to the passed pointer,
-        <code>true</code> if not.
+        \ilc{false}, if the wrapped pointer of the calling instance is equal to the passed pointer,
+        \ilc{true} if not.
 
         \brief
         Compares two pointers on inequality.
@@ -456,8 +452,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is smaller than the wrapped pointer
-        of the passed instance, <code>true</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is smaller than the wrapped pointer of the
+        passed instance, \ilc{true} if not.
 
         \brief
         Compares two pointers.
@@ -473,8 +469,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is smaller than the passed pointer,
-        <code>true</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is smaller than the passed pointer,
+        \ilc{true} if not.
 
         \brief
         Compares two pointers.
@@ -490,8 +486,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is larger than the wrapped pointer
-        of the passed instance, <code>true</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is larger than the wrapped pointer of the
+        passed instance, \ilc{true} if not.
 
         \brief
         Compares two pointers.
@@ -507,8 +503,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is larger than the passed pointer,
-        <code>true</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is larger than the passed pointer,
+        \ilc{true} if not.
 
         \brief
         Compares two pointers.
@@ -524,8 +520,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is smaller than or equal to the
-        wrapped pointer of the passed instance, <code>true</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is smaller than or equal to the wrapped
+        pointer of the passed instance, \ilc{true} if not.
 
         \brief
         Compares two pointers.
@@ -541,8 +537,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is smaller than or equal to the
-        passed pointer, <code>true</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is smaller than or equal to the passed
+        pointer, \ilc{true} if not.
 
         \brief
         Compares two pointers.
@@ -558,8 +554,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is larger than or equal to the
-        wrapped pointer of the passed instance, <code>true</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is larger than or equal to the wrapped
+        pointer of the passed instance, \ilc{true} if not.
 
         \brief
         Compares two pointers.
@@ -575,8 +571,8 @@ namespace nou
         The pointer to compare to.
 
         \return
-        <code>true</code>, if the wrapped pointer of the calling instance is larger than or equal to the
-        passed pointer, <code>true</code> if not.
+        \ilc{true}, if the wrapped pointer of the calling instance is larger than or equal to the
+        passed pointer, \ilc{true} if not.
 
         \brief
         Compares two pointers.
@@ -589,11 +585,11 @@ namespace nou
 
         /**
         \return
-        <code>false</code>.
+        \ilc{false}.
 
         \brief
-        Returns whether the wrapped pointer is <code>nullptr</code>, which is obviously always
-        <code>false</code>.
+        Returns whether the wrapped pointer is \ilc{nullptr}, which is obviously always
+        \ilc{false}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -606,14 +602,14 @@ namespace nou
         The pointer to apply the AND operation with.
 
         \return
-        <code>true</code>.
+        \ilc{true}.
 
         \brief
         Applies a logical AND operation on the two pointers.
 
         \details
-        This function always returns <code>true</code>, because, by definition, both operands are never
-        <code>nullptr</code>.
+        This function always returns \ilc{true}, because, by definition, both operands are never
+        \ilc{nullptr}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -626,14 +622,14 @@ namespace nou
         The pointer to apply the AND operation with.
 
         \return
-        <code>true</code> if \p other is not <code>nullptr</code> and <code>false</code> if it is.
+        \ilc{true} if \p other is not \ilc{nullptr} and \ilc{false} if it is.
 
         \brief
         Applies a logical AND operation on the two pointers.
 
         \details
         This function only depends on \p other, since the instance that the operator is called on can never
-        be <code>nullptr</code>.
+        be \ilc{nullptr}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -646,14 +642,14 @@ namespace nou
         The pointer to apply the OR operation with.
 
         \return
-        <code>true</code>.
+        \ilc{true}.
 
         \brief
         Applies a logical OR operation on the two pointers.
 
         \details
-        This function always returns <code>true</code>, because, per definition, both operands are never
-        <code>nullptr</code>.
+        This function always returns \ilc{true}, because, per definition, both operands are never
+        \ilc{nullptr}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -666,14 +662,14 @@ namespace nou
         The pointer to apply the OR operation with.
 
         \return
-        <code>true</code>.
+        \ilc{true}.
 
         \brief
         Applies a logical OR operation on the two pointers.
 
         \details
-        This function always returns <code>true</code>, because, per definition, the left operand is never
-        <code>nullptr</code>.
+        This function always returns \ilc{true}, because, per definition, the left operand is never
+        \ilc{nullptr}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -683,10 +679,10 @@ namespace nou
 
         /**
         \return
-        <code>true</code>.
+        \ilc{true}.
 
         \brief
-        Returns whether the wrapped pointer is not <code>nullptr</code>, which is obviously always true.
+        Returns whether the wrapped pointer is not \ilc{nullptr}, which is obviously always true.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -696,7 +692,7 @@ namespace nou
 
         /**
         \return
-        A reference to the instance that the operator was called on.
+        \ret_selfref_op
 
         \brief
         Increments the wrapped pointer by one.
@@ -709,14 +705,14 @@ namespace nou
 
         /**
         \return
-        A reference to the instance that the operator was called on.
+        \ret_selfref_op
 
         \brief
         Decrements the wrapped pointer by one.
 
         \warning
         For performance reasons, this operator does not check whether the wrapped pointer will be
-        <code>nullptr</code> after the decrementation.
+        \ilc{nullptr} after the decrementation.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -746,7 +742,7 @@ namespace nou
 
         \warning
         For performance reasons, this operator does not check whether the wrapped pointer will be
-        <code>nullptr</code> after the decrementation.
+        \ilc{nullptr} after the decrementation.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -822,16 +818,16 @@ namespace nou
 
         /**
         \param ptr
-        The pointer that will be wrapped. Must not be <code>nullptr</code>.
+        The pointer that will be wrapped. Must not be \ilc{nullptr}.
 
         \return
-        A reference to the instance that the operator was called on.
+        \ret_selfref_op
 
         \brief
         Sets the wrapped pointer to the passed one.
 
         \details
-        If \p ptr is <code>nullptr</code>, <code>::abort()</code> will be called.
+        If \p ptr is \ilc{nullptr}, \ilc{\::abort()} will be called.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -844,7 +840,7 @@ namespace nou
         The value to add to the wrapped pointer.
 
         \return
-        A reference to the instance that the operator was called on.
+        \ret_selfref_op
 
         \brief
         Increments the wrapped pointer by \p offset.
@@ -860,7 +856,7 @@ namespace nou
         The value to subtract from the wrapped pointer.
 
         \return
-        A reference to the instance that the operator was called on.
+        \ret_selfref_op
 
         \brief
         Decrements the wrapped pointer by \p offset.
@@ -877,10 +873,10 @@ namespace nou
     The pointer to compare to.
 
     \param notNull
-    The <code>nou::NotNull</code> instance.
+    The \ilc{nou::NotNull} instance.
 
     \return
-    <code>true</code>, if the wrapped pointer of \p notNull is equal to \p other, <code>false</code> if not.
+    \ilc{true}, if the wrapped pointer of \p notNull is equal to \p other, \ilc{false} if not.
 
     \brief
     Compares two pointers on equality.
@@ -897,10 +893,10 @@ namespace nou
     The pointer to compare to.
 
     \param notNull
-    The <code>nou::NotNull</code> instance.
+    The \ilc{nou::NotNull} instance.
 
     \return
-    <code>false</code>, if the wrapped pointer of \p notNull is equal to \p other, <code>true</code> if not.
+    \ilc{false}, if the wrapped pointer of \p notNull is equal to \p other, \ilc{true} if not.
 
     \brief
     Compares two pointers on inequality.
@@ -917,10 +913,10 @@ namespace nou
     The pointer to compare to.
 
     \param notNull
-    The <code>nou::NotNull</code> instance.
+    The \ilc{nou::NotNull} instance.
 
     \return
-    <code>true</code>, if \p other is smaller than the wrapped pointer of \p notNull, true if not.
+    \ilc{true}, if \p other is smaller than the wrapped pointer of \p notNull, true if not.
 
     \brief
     Compares two pointers.
@@ -937,10 +933,10 @@ namespace nou
     The pointer to compare to.
 
     \param notNull
-    The <code>nou::NotNull</code> instance.
+    The \ilc{nou::NotNull} instance.
 
     \return
-    <code>true</code>, if \p other is larger than the wrapped pointer of \p notNull, true if not.
+    \ilc{true}, if \p other is larger than the wrapped pointer of \p notNull, true if not.
 
     \brief
     Compares two pointers.
@@ -957,11 +953,10 @@ namespace nou
     The pointer to compare to.
 
     \param notNull
-    The <code>nou::NotNull</code> instance.
+    The \ilc{nou::NotNull} instance.
 
     \return
-    <code>true</code>, if \p other is smaller than or equal to the wrapped pointer of \p notNull, true if
-    not.
+    \ilc{true}, if \p other is smaller than or equal to the wrapped pointer of \p notNull, true if not.
 
     \brief
     Compares two pointers.
@@ -978,10 +973,10 @@ namespace nou
     The pointer to compare to.
 
     \param notNull
-    The <code>nou::NotNull</code> instance.
+    The \ilc{nou::NotNull} instance.
 
     \return
-    <code>true</code>, if \p other is larger than or equal to the wrapped pointer of \p notNull, true if not.
+    \ilc{true}, if \p other is larger than or equal to the wrapped pointer of \p notNull, true if not.
 
     \brief
     Compares two pointers.
@@ -998,17 +993,17 @@ namespace nou
     The pointer to apply the AND operation with.
 
     \param notNull
-    The <code>nou::NotNull</code> instance.
+    The \ilc{nou::NotNull} instance.
 
     \return
-    <code>true</code> if \p other is not <code>nullptr</code> and <code>false</code> if it is.
+    \ilc{true} if \p other is not \ilc{nullptr} and \ilc{false} if it is.
 
     \brief
     Applies a logical AND operation on the two pointers.
 
     \details
-    This function only depends on \p other, since the instance that the operator is called on can never
-    be <code>nullptr</code>.
+    This function only depends on \p other, since the instance that the operator is called on can never be
+    \ilc{nullptr}.
 
     \author  Lukas Reichmann
     \version 1.1.0.0
@@ -1022,17 +1017,17 @@ namespace nou
     The pointer to apply the OR operation with.
 
     \param notNull
-    The <code>nou::NotNull</code> instance.
+    The \ilc{nou::NotNull} instance.
 
     \return
-    <code>true</code>.
+    \ilc{true}.
 
     \brief
     Applies a logical OR operation on the two pointers.
 
     \details
-    This function always returns <code>true</code>, because, per definition, the right operand is never
-    <code>nullptr</code>.
+    This function always returns \ilc{true}, because, per definition, the right operand is never
+    \ilc{nullptr}.
 
     \author  Lukas Reichmann
     \version 1.1.0.0
@@ -1081,7 +1076,7 @@ namespace nou
     template<typename T>
     constexpr const NotNull<T> operator+(ptrdiffType offset, const NotNull<T> &notNull);
 
-
+    ///\cond
 
     template<typename T>
     constexpr void NotNull<T>::checkNull() const
@@ -1403,6 +1398,8 @@ namespace nou
     {
         return NotNull<T>(offset + notNull.rawPtr());
     }
+
+    ///\endcond
 } // namespace nou
 
 #endif

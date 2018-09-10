@@ -14,10 +14,10 @@ A component that provides the fundamental types that are used throughout the ent
 \details
 Since the C++ standard lacks clearly defined value boundaries for primitive datatypes, but it is desirable to
 have such fixed boundaries, this component provides such types with a fixed width along all platforms. These
-types are equivalent to their respective type in the STL (<code>nou::int32</code> is the same type as <code>
-std::int32_t</code>, or just <code>int32_t</code> from the C standard library for that matter).
+types are equivalent to their respective type in the STL (\ilc{nou::int32} is the same type as
+\ilc{std::int32_t}, or just \ilc{int32_t} from the C standard library for that matter).
 
-<b>Example:</b>
+\par_example
 \code{.cpp}
 int main()
 {
@@ -39,7 +39,7 @@ namespace nou
     \details
     This type should be used when allocating memory on a byte-level to enhance readability.
 
-    <b>Example:</b>
+    \par_example
     \code{.cpp}
     nou::byte memory[sizeof(nou::int32)]; //allocate enough memory to hold a nou::int32 as a byte array
     \endcode
@@ -55,7 +55,7 @@ namespace nou
     A datatype to store boolean values.
 
     \details
-    This types behaves the same way that the build-in type <code>bool</code> does.
+    This types behaves the same way that the build-in type \ilc{bool} does.
 
     \author  Lukas Reichmann
     \version 1.1.0.0
@@ -185,7 +185,7 @@ namespace nou
 
     /**
     \brief
-    The type of <code>nullptr</code>.
+    The type of \ilc{nullptr}.
 
     \author  Lukas Reichmann
     \version 1.1.0.0
@@ -212,7 +212,7 @@ namespace nou
         A metafunction that returns a floating point type with the passed size \p SIZE.
 
         \details
-        The returned type is in the member type alias <code>type</code>.
+        The returned type is in the member type alias \ilc{type}.
 
         If a size is passed that is smaller than any of the available floating point types, the smallest of
         the available types will be returned.

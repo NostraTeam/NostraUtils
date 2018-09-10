@@ -48,7 +48,7 @@ int main()
     NOU_TEST_IS_TRUE(std::strcmp(NOU_STRINGIFY(sometext), "sometext") == 0);
 
     // WARNING: If any lines are added above, the right parameter of the next test case needs to be adjusted
-    NOU_TEST_IS_TRUE(std::strcmp(NOU_LINE_STRING, "47") == 0);
+    NOU_TEST_IS_TRUE(std::strcmp(NOU_LINE_STRING, "51") == 0);
 
     return 0;
 }

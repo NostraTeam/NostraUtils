@@ -96,7 +96,7 @@ int main()
         NOU_TEST_IS_EQUAL(pair1.second.get(), 6);
 
     }
-    
+    
 
     //test copy constructors
     {
@@ -135,7 +135,7 @@ int main()
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
     }
-    
+    
 
     //test move constructors
     {
