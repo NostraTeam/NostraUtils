@@ -13,10 +13,10 @@ A component that provides a data structure that can hold two values of different
 
 \details
 The main class in this component, <code>nou::Pair</code> behaves somewhat like <code>nou::Tuple</code> that
-stores two values. 
+stores two values.
 
-Accessing the values stored in a pair is done through the (public) member variables 
-<code>\link nou::Pair::first first\endlink</code> and <code>\link nou::Pair::second second\endlink</code>. 
+Accessing the values stored in a pair is done through the (public) member variables
+<code>\link nou::Pair::first first\endlink</code> and <code>\link nou::Pair::second second\endlink</code>.
 The class also supports structural bindings.
 
 <second>Example:</second>
@@ -59,7 +59,7 @@ namespace nou
     class Pair final
     {
     public:
-        using FirstType = A;
+        using FirstType  = A;
         using SecondType = B;
 
         /**
@@ -95,7 +95,7 @@ namespace nou
         \param second
         The second value.
 
-        \brief 
+        \brief
         Constructs a new instance from two l-value references.
 
         \author  Lukas Reichmann
@@ -180,15 +180,15 @@ namespace nou
         \tparam N
         The index of the value to get. Must be either <code>0</code> or <code>1</code>.
 
-        \brief 
+        \brief
         Returns the value at the specified index.
 
         \details
         This function is mainly to allow structured bindings; the data should be accessed using one of the
         public member variables.
         */
-        //template<sizeType N>
-        //decltype(auto) get() const;
+        // template<sizeType N>
+        // decltype(auto) get() const;
 
         /**
         \param other
@@ -204,7 +204,7 @@ namespace nou
         \version 1.1.0.0
         \since   1.1.0.0
         */
-        Pair& operator = (const Pair<A, B> &other);
+        Pair &operator=(const Pair<A, B> &other);
 
         /**
         \param other
@@ -220,7 +220,7 @@ namespace nou
         \version 1.1.0.0
         \since   1.1.0.0
         */
-        Pair& operator = (Pair<A, B> &&other);
+        Pair &operator=(Pair<A, B> &&other);
 
         /**
         \param other
@@ -237,7 +237,7 @@ namespace nou
         \since   1.1.0.0
         */
         template<typename OA, typename OB>
-        Pair& operator = (const Pair<OA, OB> &other);
+        Pair &operator=(const Pair<OA, OB> &other);
 
         /**
         \param other
@@ -254,7 +254,7 @@ namespace nou
         \since   1.1.0.0
         */
         template<typename OA, typename OB>
-        Pair& operator = (Pair<OA, OB> &&other);
+        Pair &operator=(Pair<OA, OB> &&other);
     };
 
     /**
@@ -280,45 +280,45 @@ namespace nou
 
     ///**
     //\param first
-    //The first value.
+    // The first value.
 
     //\param second
-    //The second value.
+    // The second value.
 
     //\brief
-    //Constructs a new <code>nou::Pair</code> instance from one l-value reference and one r-value reference.
+    // Constructs a new <code>nou::Pair</code> instance from one l-value reference and one r-value reference.
 
     //\details
-    //This function can be used to write cleaner code, because it does not require the usage of explicit
-    //template parameters.
+    // This function can be used to write cleaner code, because it does not require the usage of explicit
+    // template parameters.
 
     //\author  Lukas Reichmann
     //\version 1.1.0.0
     //\since   1.1.0.0
     //*/
-    //template<typename A, typename B>
-    //Pair<A, B> pair(const A &first, B &&second);
+    // template<typename A, typename B>
+    // Pair<A, B> pair(const A &first, B &&second);
 
     ///**
     //\param first
-    //The first value.
+    // The first value.
 
     //\param second
-    //The second value.
+    // The second value.
 
     //\brief
-    //Constructs a new <code>nou::Pair</code> instance from one r-value reference and one l-value reference.
+    // Constructs a new <code>nou::Pair</code> instance from one r-value reference and one l-value reference.
 
     //\details
-    //This function can be used to write cleaner code, because it does not require the usage of explicit
-    //template parameters.
+    // This function can be used to write cleaner code, because it does not require the usage of explicit
+    // template parameters.
 
     //\author  Lukas Reichmann
     //\version 1.1.0.0
     //\since   1.1.0.0
     //*/
-    //template<typename A, typename B>
-    //Pair<A, B> pair(A &&first, const B &second);
+    // template<typename A, typename B>
+    // Pair<A, B> pair(A &&first, const B &second);
 
     /**
     \param first
@@ -331,7 +331,7 @@ namespace nou
     Constructs a new <code>nou::Pair</code> instance from two r-value references.
 
     \details
-    This function can be used to write cleaner code, because it does not require the usage of explicit 
+    This function can be used to write cleaner code, because it does not require the usage of explicit
     template parameters.
 
     \author  Lukas Reichmann
@@ -343,19 +343,16 @@ namespace nou
 
 
 
-
     template<typename A, typename B>
     template<typename OA, typename OB>
-    Pair<A, B>::Pair(const OA &first, const OB &second) :
-        first(first),
-        second(second)
+    Pair<A, B>::Pair(const OA &first, const OB &second) : first(first), second(second)
     {}
 
     template<typename A, typename B>
     template<typename OA, typename OB>
     Pair<A, B>::Pair(OA &&first, OB &&second) :
-        first(static_cast<OA&&>(first)),
-        second(static_cast<OB&&>(second))
+        first(static_cast<OA &&>(first)),
+        second(static_cast<OB &&>(second))
     {}
 
     template<typename A, typename B>
@@ -363,7 +360,8 @@ namespace nou
     {}
 
     template<typename A, typename B>
-    Pair<A, B>::Pair(Pair<A, B> &&other) : Pair(static_cast<A&&>(other.first), static_cast<B&&>(other.second))
+    Pair<A, B>::Pair(Pair<A, B> &&other) :
+        Pair(static_cast<A &&>(other.first), static_cast<B &&>(other.second))
     {}
 
     template<typename A, typename B>
@@ -373,7 +371,8 @@ namespace nou
 
     template<typename A, typename B>
     template<typename OA, typename OB>
-    Pair<A, B>::Pair(Pair<OA, OB> &&other) : Pair(static_cast<A&&>(other.first), static_cast<B&&>(other.second))
+    Pair<A, B>::Pair(Pair<OA, OB> &&other) :
+        Pair(static_cast<A &&>(other.first), static_cast<B &&>(other.second))
     {}
     /*
     template<typename A, typename B>
@@ -387,30 +386,30 @@ namespace nou
         else
             return second;
     }*/
-    
+
     template<typename A, typename B>
-    Pair<A, B>& Pair<A, B>::operator = (const Pair<A, B> &other)
+    Pair<A, B> &Pair<A, B>::operator=(const Pair<A, B> &other)
     {
-        first = other.first;
+        first  = other.first;
         second = other.second;
 
         return *this;
     }
 
     template<typename A, typename B>
-    Pair<A, B>& Pair<A, B>::operator = (Pair<A, B> &&other)
+    Pair<A, B> &Pair<A, B>::operator=(Pair<A, B> &&other)
     {
-        first = static_cast<A&&>(other.first);
-        first = static_cast<B&&>(other.second);
+        first = static_cast<A &&>(other.first);
+        first = static_cast<B &&>(other.second);
 
         return *this;
     }
 
     template<typename A, typename B>
     template<typename OA, typename OB>
-    Pair<A, B>& Pair<A, B>::operator = (const Pair<OA, OB> &other)
+    Pair<A, B> &Pair<A, B>::operator=(const Pair<OA, OB> &other)
     {
-        first = other.first;
+        first  = other.first;
         second = other.second;
 
         return *this;
@@ -418,10 +417,10 @@ namespace nou
 
     template<typename A, typename B>
     template<typename OA, typename OB>
-    Pair<A, B>& Pair<A, B>::operator = (Pair<OA, OB> &&other)
+    Pair<A, B> &Pair<A, B>::operator=(Pair<OA, OB> &&other)
     {
-        first = static_cast<OA&&>(other.first);
-        second = static_cast<OB&&>(other.second);
+        first  = static_cast<OA &&>(other.first);
+        second = static_cast<OB &&>(other.second);
 
         return *this;
     }
@@ -433,25 +432,25 @@ namespace nou
     {
         return Pair<A, B>(first, second);
     }
-/*
-    template<typename A, typename B>
-    Pair<A, B> pair(const A &first, B &&second)
-    {
-        return Pair<A, B>(first, static_cast<B&&>(second));
-    }
+    /*
+        template<typename A, typename B>
+        Pair<A, B> pair(const A &first, B &&second)
+        {
+            return Pair<A, B>(first, static_cast<B&&>(second));
+        }
 
-    template<typename A, typename B>
-    Pair<A, B> pair(A &&first, const B &second)
-    {
-        return Pair<A, B>(static_cast<A&&>(first), second);
-    }
-*/
+        template<typename A, typename B>
+        Pair<A, B> pair(A &&first, const B &second)
+        {
+            return Pair<A, B>(static_cast<A&&>(first), second);
+        }
+    */
     template<typename A, typename B>
     Pair<A, B> pair(A &&first, B &&second)
     {
-        return Pair<A, B>(static_cast<A&&>(first), static_cast<B&&>(second));
+        return Pair<A, B>(static_cast<A &&>(first), static_cast<B &&>(second));
     }
-}
+} // namespace nou
 /*
 ///\cond
 //This exists to enable structured bindings

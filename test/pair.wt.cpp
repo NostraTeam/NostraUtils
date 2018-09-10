@@ -8,17 +8,21 @@ A test for pair.
 */
 
 #ifndef NOU_TYPES_HPP
-#include "nostrautils/types.hpp"
+#    include "nostrautils/types.hpp"
 #endif
 
 #ifndef NOU_PAIR_HPP
-#include "nostrautils/pair.hpp"
+#    include "nostrautils/pair.hpp"
 #endif
 
 #include <iostream>
 
-#define NOU_TEST_IS_TRUE(...) if(!(__VA_ARGS__)) {std::cout << "Failed in line: " << __LINE__ << "\n"; \
-	exit(__LINE__);}
+#define NOU_TEST_IS_TRUE(...)                                \
+    if(!(__VA_ARGS__))                                       \
+    {                                                        \
+        std::cout << "Failed in line: " << __LINE__ << "\n"; \
+        exit(__LINE__);                                      \
+    }
 
 #define NOU_TEST_IS_EQUAL(a, b) NOU_TEST_IS_TRUE(((a) == (b)))
 
@@ -28,8 +32,7 @@ private:
     nou::int32 m_a;
 
 public:
-    Test(nou::int32 a) : 
-        m_a(a)
+    Test(nou::int32 a) : m_a(a)
     {}
 
 
@@ -42,17 +45,17 @@ public:
 class NoCopy
 {
 public:
-    NoCopy() = default;
-    NoCopy(const NoCopy&) = delete;
-    NoCopy(NoCopy&&) = default;
+    NoCopy()               = default;
+    NoCopy(const NoCopy &) = delete;
+    NoCopy(NoCopy &&)      = default;
 };
 
 class NoMove
 {
 public:
-    NoMove() = default;
-    NoMove(const NoMove&) = default;
-    NoMove(NoMove&&) = delete;
+    NoMove()               = default;
+    NoMove(const NoMove &) = default;
+    NoMove(NoMove &&)      = delete;
 };
 
 int main()
@@ -62,12 +65,12 @@ int main()
     NOU_TEST_IS_EQUAL(pair.first, 5);
     NOU_TEST_IS_EQUAL(pair.second, 6.0f);
 
-    //test structured bindings
-    auto[a, b] = pair;
+    // test structured bindings
+    auto [a, b] = pair;
 
     NOU_TEST_IS_EQUAL(a, pair.first);
     NOU_TEST_IS_EQUAL(b, pair.second);
-    
+
     /*//test nou::pair()
     {
         Test test1(5);
@@ -94,6 +97,7 @@ int main()
 
     }
     
+
     //test copy constructors
     {
         Test test1(5);
@@ -132,6 +136,7 @@ int main()
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
     }
     
+
     //test move constructors
     {
         Test test1(5);
@@ -165,8 +170,8 @@ int main()
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
     }*/
-    
-    //test copy assign
+
+    // test copy assign
     {
         Test test1(5);
         Test test2(6);
@@ -180,11 +185,11 @@ int main()
     {
         Test test1(5);
         Test test2(6);
-        
-        nou::Pair<Test, Test&> pair1(test1, test2);
+
+        nou::Pair<Test, Test &> pair1(test1, test2);
         nou::Pair<Test, Test> pair2(pair1);
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
-        //NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
+        // NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
     }
     /*{
         Test test1(5);
