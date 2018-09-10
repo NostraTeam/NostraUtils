@@ -12,14 +12,35 @@
 A component that provides a data structure that can hold two values of different types.
 
 \details
-The main class in this component, <code>nou::Pair</code> behaves somewhat like <code>nou::Tuple</code> that
+The main class in this component, \ilc{nou::Pair} behaves somewhat like \ilc{nou::Tuple} that
 stores two values. 
 
 Accessing the values stored in a pair is done through the (public) member variables 
-<code>\link nou::Pair::first first\endlink</code> and <code>\link nou::Pair::second second\endlink</code>. 
+\ilc{\link nou::Pair::first first\endlink} and \ilc{\link nou::Pair::second second\endlink}. In additions to
+these two, there are two alias names for each of the variables:
+<table>
+    <tr>
+        <th>Actual Name</th>
+        <th>Alias Names</th>
+    </tr>
+    <tr>
+        <td rowspan="2">first</td>
+        <td>a</td>
+    </tr>
+    <tr>
+        <td>left</td>
+    </tr>
+    <tr>
+        <td rowspan="2">second</td>
+        <td>b</td>
+    </tr>
+    <tr>
+        <td>right</td>
+    </tr>
+</table>
 The class also supports structural bindings.
 
-<second>Example:</second>
+\par_example
 \code{.cpp}
 nou::Pair<nou::int32, nou::float32> pair = nou::pair(5, 10.0f);
 
@@ -35,6 +56,10 @@ For a more detailed example, see \link pair.ex.cpp here\endlink.
 
 An example that demonstrates the usage of the pair component.
 */
+
+#ifndef NOU_TYPES_HPP
+#include <nostrautils/types.hpp>
+#endif
 
 #include <tuple>
 #include <type_traits>
@@ -67,7 +92,7 @@ namespace nou
         The first value.
 
         \details
-        This is equivalent to <code>first</code> and <code>left</code>.
+        This is equivalent to \ilc{a} and \ilc{left}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -80,7 +105,7 @@ namespace nou
         The second value.
 
         \details
-        This is equivalent to <code>second</code> and <code>right</code>.
+        This is equivalent to \ilc{b} and \ilc{right}.
 
         \author  Lukas Reichmann
         \version 1.1.0.0
@@ -88,12 +113,56 @@ namespace nou
         */
         B second;
 
+        /**
+        \brief
+        The first value.
+
+        \details
+        This is equivalent to \ilc{first} and \ilc{left}.
+
+        \author  Lukas Reichmann
+        \version 1.1.0.0
+        \since   1.1.0.0
+        */
         A &a;
 
+        /**
+        \brief
+        The second value.
+
+        \details
+        This is equivalent to \ilc{second} and \ilc{right}.
+
+        \author  Lukas Reichmann
+        \version 1.1.0.0
+        \since   1.1.0.0
+        */
         B &b;
 
+        /**
+        \brief
+        The first value.
+
+        \details
+        This is equivalent to \ilc{first} and \ilc{a}.
+
+        \author  Lukas Reichmann
+        \version 1.1.0.0
+        \since   1.1.0.0
+        */
         A &left;
 
+        /**
+        \brief
+        The second value.
+
+        \details
+        This is equivalent to \ilc{second} and \ilc{b}.
+
+        \author  Lukas Reichmann
+        \version 1.1.0.0
+        \since   1.1.0.0
+        */
         B &right;
 
         /**
@@ -186,7 +255,7 @@ namespace nou
         
         /**
         \tparam N
-        The index of the value to get. Must be either <code>0</code> or <code>1</code>.
+        The index of the value to get. Must be either \ilc{0} or \ilc{1}.
 
         \brief 
         Returns the value at the specified index.
@@ -273,7 +342,7 @@ namespace nou
     The second value.
 
     \brief
-    Constructs a new <code>nou::Pair</code> instance from two r-value references.
+    Constructs a new \ilc{nou::Pair} instance from two r-value references.
 
     \details
     This function can be used to write cleaner code, because it does not require the usage of explicit 
@@ -329,6 +398,8 @@ namespace nou
     Pair<A, B>::Pair(Pair<OA, OB> &&other) : Pair(static_cast<A&&>(other.first), static_cast<B&&>(other.second))
     {}
     
+    ///\cond
+
     template<typename A, typename B>
     template<sizeType N>
     decltype(auto) Pair<A, B>::get() const
@@ -341,6 +412,8 @@ namespace nou
             return second;
     }
     
+    ///\endcond
+
     template<typename A, typename B>
     Pair<A, B>& Pair<A, B>::operator = (const Pair<A, B> &other)
     {

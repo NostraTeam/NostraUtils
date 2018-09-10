@@ -173,6 +173,7 @@ if(NOU_BUILD_EXAMPLES)
 	nou_add_example(stddef.ex)
 	nou_add_example(assert.ex)
 	nou_add_example(notnull.ex)
+	nou_add_example(pair.ex)
 endif()
 # Examples end
 
