@@ -62,6 +62,12 @@ int main()
     NOU_TEST_IS_EQUAL(pair.first, 5);
     NOU_TEST_IS_EQUAL(pair.second, 6.0f);
 
+    NOU_TEST_IS_EQUAL(pair.first, pair.a);
+    NOU_TEST_IS_EQUAL(pair.second, pair.b);
+
+    NOU_TEST_IS_EQUAL(pair.first, pair.left);
+    NOU_TEST_IS_EQUAL(pair.second, pair.right);
+
     //test structured bindings
     auto[a, b] = pair;
 
@@ -145,7 +151,7 @@ int main()
         Test test1(5);
         Test test2(6);
 
-        nou::Pair<Test, Test> pair2(nou::pair(test1, test2));
+        nou::Pair<Test&, Test> pair2(nou::pair(test1, test2));
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
     }
@@ -153,7 +159,7 @@ int main()
         Test test1(5);
         Test test2(6);
 
-        nou::Pair<Test, Test> pair2(nou::pair(test1, test2));
+        nou::Pair<Test, Test&> pair2(nou::pair(test1, test2));
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
     }
@@ -161,7 +167,7 @@ int main()
         Test test1(5);
         Test test2(6);
 
-        nou::Pair<Test, Test> pair2(nou::pair(test1, test2));
+        nou::Pair<Test&, Test&> pair2(nou::pair(test1, test2));
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
     }
@@ -181,7 +187,7 @@ int main()
         Test test1(5);
         Test test2(6);
         
-        nou::Pair<Test, Test&> pair1(test1, test2);
+        nou::Pair<Test&, Test> pair1(test1, test2);
         nou::Pair<Test, Test> pair2(pair1);
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
@@ -191,7 +197,7 @@ int main()
         Test test2(6);
 
         nou::Pair<Test, Test> pair1(test1, test2);
-        nou::Pair<Test, Test> pair2(Test(1000), Test(2000));
+        nou::Pair<Test, Test&> pair2(Test(1000), Test(2000));
         pair2 = pair1;
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
@@ -201,7 +207,7 @@ int main()
         Test test2(6);
 
         nou::Pair<Test, Test> pair1(test1, test2);
-        nou::Pair<Test, Test> pair2(Test(1000), Test(2000));
+        nou::Pair<Test&, Test&> pair2(Test(1000), Test(2000));
         pair2 = pair1;
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
@@ -221,7 +227,7 @@ int main()
         Test test1(5);
         Test test2(6);
 
-        nou::Pair<Test, Test> pair2(Test(1000), Test(2000));
+        nou::Pair<Test&, Test> pair2(Test(1000), Test(2000));
         pair2 = nou::pair(test1, test2);
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
@@ -230,7 +236,7 @@ int main()
         Test test1(5);
         Test test2(6);
 
-        nou::Pair<Test, Test> pair2(Test(1000), Test(2000));
+        nou::Pair<Test, Test&> pair2(Test(1000), Test(2000));
         pair2 = nou::pair(test1, test2);
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
@@ -239,8 +245,9 @@ int main()
         Test test1(5);
         Test test2(6);
 
-        nou::Pair<Test, Test> pair2(Test(1000), Test(2000));
+        nou::Pair<Test&, Test&> pair2(Test(1000), Test(2000));
         pair2 = nou::pair(test1, test2);
+        
         NOU_TEST_IS_EQUAL(pair2.first.get(), 5);
         NOU_TEST_IS_EQUAL(pair2.second.get(), 6);
     }
