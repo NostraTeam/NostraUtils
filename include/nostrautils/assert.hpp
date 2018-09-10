@@ -101,7 +101,8 @@ namespace nou
 		<li>\ilc{printOnFail}</li>
 		<li>\ilc{callbackOnFail}</li>
 		<li>\ilc{breakOnFail}</li>
-		<li>\ilc{exitOnFail}</li>
+        <li>\ilc{exitOnFail}</li>
+        <li>\ilc{abortOnFail}</li>
 	</ol>
 
 	\author  Lukas Reichmann
@@ -198,6 +199,21 @@ namespace nou
 		\since   1.1.0.0
 		*/
 		static int exitCode;
+
+        /**
+        \brief
+        If true, \ilc{abort()} will be called as soon as an assertion fails.
+
+        \details
+        By default, this variable is set to \ilc{false}.
+
+        \see exitCode
+
+        \author  Lukas Reichmann
+        \version 1.1.0.0
+        \since   1.1.0.0
+        */
+        static boolean abortOnFail;
 
 		/**
 		\brief 

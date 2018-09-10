@@ -15,6 +15,8 @@ namespace nou
 
 	int AssertionSettings::exitCode = -1;
 
+    boolean AssertionSettings::abortOnFail = false;
+
 	AssertionSettings::CallbackType AssertionSettings::callbackOnFail = nullptr;
 
 	namespace internal
@@ -41,6 +43,9 @@ namespace nou
 
 				if (AssertionSettings::exitOnFail)
 					std::exit(AssertionSettings::exitCode);
+
+                if (AssertionSettings::abortOnFail)
+                    std::exit(AssertionSettings::exitCode);
 			}
 		}
 	}
