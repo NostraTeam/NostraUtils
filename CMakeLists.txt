@@ -137,8 +137,6 @@ function(nou_add_test TEST_NAME)
 		NAME 
 			"nou.${TEST_NAME}"
 		COMMAND 
-			"nou.${TEST_NAME}"
-		WORKING_DIRECTORY 
 			"nou.${TEST_NAME}")
 endfunction()
 
