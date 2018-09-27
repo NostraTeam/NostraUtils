@@ -137,8 +137,6 @@ function(nou_add_test TEST_NAME)
 		NAME 
 			"nou.${TEST_NAME}"
 		COMMAND 
-			"nou.${TEST_NAME}"
-		WORKING_DIRECTORY 
 			"nou.${TEST_NAME}")
 endfunction()
 
@@ -151,6 +149,7 @@ if(BUILD_TESTING)
 	nou_add_test(assert.wt)
 	nou_add_test(notnull.wt)
 	nou_add_test(pair.wt)
+	nou_add_test(declval.wt)
 endif()
 # Tests end
 
@@ -173,6 +172,7 @@ if(NOU_BUILD_EXAMPLES)
 	nou_add_example(stddef.ex)
 	nou_add_example(assert.ex)
 	nou_add_example(notnull.ex)
+	nou_add_example(declval.ex)
 endif()
 # Examples end
 

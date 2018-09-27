@@ -57,6 +57,8 @@ An example that demonstrates the usage of the notnull component.
 #endif
 
 #include <cstdlib>
+#include <type_traits>
+#include <utility>
 
 namespace nou
 {
@@ -764,7 +766,8 @@ namespace nou
         \version 1.1.0.0
         \since   1.1.0.0
         */
-        constexpr NotNull operator+(ptrdiffType offset) const;
+        template<typename PointerType>
+        constexpr NotNull operator+(const PointerType &offset) const;
 
         /**
         \param other
@@ -812,7 +815,10 @@ namespace nou
         \version 1.1.0.0
         \since   1.1.0.0
         */
-        constexpr NotNull operator-(ptrdiffType offset) const;
+        template<typename PointerType,
+                 typename = std::enable_if_t<
+                     std::is_constructible<NotNull<T>, decltype(m_ptr - std::declval<PointerType>())>::value>>
+        constexpr NotNull operator-(const PointerType &offset) const; // TODO: use nou meta functions
 
         NotNull &operator=(nullptrType) = delete;
 
@@ -849,7 +855,8 @@ namespace nou
         \version 1.1.0.0
         \since   1.1.0.0
         */
-        inline NotNull &operator+=(ptrdiffType offset);
+        template<typename PointerType>
+        inline NotNull &operator+=(const PointerType &offset);
 
         /**
         \param offset
@@ -865,7 +872,8 @@ namespace nou
         \version 1.1.0.0
         \since   1.1.0.0
         */
-        inline NotNull &operator-=(ptrdiffType offset);
+        template<typename PointerType>
+        inline NotNull &operator-=(const PointerType &offset);
     };
 
     /**
@@ -1053,8 +1061,8 @@ namespace nou
     \version 1.1.0.0
     \since   1.1.0.0
     */
-    template<typename T>
-    constexpr NotNull<T> operator+(ptrdiffType offset, NotNull<T> &notNull);
+    template<typename T, typename PointerType>
+    constexpr NotNull<T> operator+(const PointerType &offset, NotNull<T> &notNull);
 
     /**
     \param offset
@@ -1073,8 +1081,8 @@ namespace nou
     \version 1.1.0.0
     \since   1.1.0.0
     */
-    template<typename T>
-    constexpr const NotNull<T> operator+(ptrdiffType offset, const NotNull<T> &notNull);
+    template<typename T, typename PointerType>
+    constexpr const NotNull<T> operator+(const PointerType &offset, const NotNull<T> &notNull);
 
     ///\cond
 
@@ -1284,7 +1292,8 @@ namespace nou
     }
 
     template<typename T>
-    constexpr NotNull<T> NotNull<T>::operator+(ptrdiffType offset) const
+    template<typename PointerType>
+    constexpr NotNull<T> NotNull<T>::operator+(const PointerType &offset) const
     {
         return NotNull<T>(m_ptr + offset);
     }
@@ -1302,7 +1311,8 @@ namespace nou
     }
 
     template<typename T>
-    constexpr NotNull<T> NotNull<T>::operator-(ptrdiffType offset) const
+    template<typename PointerType, typename>
+    constexpr NotNull<T> NotNull<T>::operator-(const PointerType &offset) const
     {
         return NotNull<T>(m_ptr - offset);
     }
@@ -1318,7 +1328,8 @@ namespace nou
     }
 
     template<typename T>
-    inline NotNull<T> &NotNull<T>::operator+=(ptrdiffType offset)
+    template<typename PointerType>
+    inline NotNull<T> &NotNull<T>::operator+=(const PointerType &offset)
     {
         m_ptr += offset;
 
@@ -1328,7 +1339,8 @@ namespace nou
     }
 
     template<typename T>
-    inline NotNull<T> &NotNull<T>::operator-=(ptrdiffType offset)
+    template<typename PointerType>
+    inline NotNull<T> &NotNull<T>::operator-=(const PointerType &offset)
     {
         m_ptr -= offset;
 
@@ -1336,8 +1348,6 @@ namespace nou
 
         return *this;
     }
-
-
 
     template<typename T>
     constexpr boolean operator==(typename NotNull<T>::ConstTypeRef other, const NotNull<T> &notNull)
@@ -1387,14 +1397,14 @@ namespace nou
         return true;
     }
 
-    template<typename T>
-    constexpr NotNull<T> operator+(ptrdiffType offset, NotNull<T> &notNull)
+    template<typename T, typename PointerType>
+    constexpr NotNull<T> operator+(const PointerType &offset, NotNull<T> &notNull)
     {
         return NotNull<T>(offset + notNull.rawPtr());
     }
 
-    template<typename T>
-    constexpr const NotNull<T> operator+(ptrdiffType offset, const NotNull<T> &notNull)
+    template<typename T, typename PointerType>
+    constexpr const NotNull<T> operator+(const PointerType &offset, const NotNull<T> &notNull)
     {
         return NotNull<T>(offset + notNull.rawPtr());
     }

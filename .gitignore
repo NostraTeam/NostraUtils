@@ -1,6 +1,8 @@
 # Usually hidden IDE directories
 /.vs
 /.vscode
+/.cproject
+/.project
 
 # Visual Studio CMake configuration file
 CMakeSettings.json
