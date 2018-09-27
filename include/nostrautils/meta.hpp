@@ -21,7 +21,7 @@ The functions in this component can be grouped in three groups:
     <li>
         type modification: Functions that take in a type and modify that type in some way (e.g. they add
         \ilc{const}).
-    </lu>
+    </li>
     <li>
         logic: Functions that are provide some sort of logic for meta functions (e.g. comparing types, if
         statements).
@@ -53,6 +53,12 @@ void func(const T &t)
 For a more detailed example, see \link meta.ex.cpp here\endlink.
 */
 
+/**
+\example meta.ex.cpp
+
+An example that demonstrates the usage of the declval component.
+*/
+
 #ifndef NOU_TYPES_HPP
 #    include "nostrautils/types.hpp"
 #endif
@@ -69,7 +75,7 @@ namespace nou
     \ilc{T}.
 
     \brief
-    A metafunction that stores the type that was passed to it.
+    A meta function that stores the type that was passed to it.
 
     \details
     There is no \ilc{IdentityType} alias.
@@ -102,7 +108,7 @@ namespace nou
     Both the type of the value (in \ilc{type}) and the value itself (in \ilc{value}).
 
     \brief
-    A metafunction that can store a single constant of a single type.
+    A meta function that can store a single constant of a single type.
 
     \details
     This function is somewhat special, because it returns a type and a value. In addition to that, there is
@@ -122,7 +128,7 @@ namespace nou
         \version 1.1.0.0
         \since   1.1.0.0
         */
-        static constexpr Type value = VALUE;
+        static constexpr typename Identity<T>::Type value = VALUE;
     };
 
     /**
@@ -174,7 +180,7 @@ namespace nou
 
     \tparam A
     The first type that may be chosen.
-         
+
     \tparam B
     The second type that may be chosen.
 
@@ -214,7 +220,7 @@ namespace nou
 
     \tparam A
     The first type that may be chosen.
-    
+
     \tparam B
     The second type that may be chosen.
 
@@ -253,7 +259,7 @@ namespace nou
 
         ///\cond
         template<typename T, typename... ARGS>
-        struct Get<0, T, ARGS> : Identity<T>
+        struct Get<0, T, ARGS...> : Identity<T>
         {};
         ///\endcond
     } // namespace internal
@@ -315,7 +321,7 @@ namespace nou
     Returns \ilc{T} if \ilc{B} is \ilc{true}, otherwise there will be no return type.
 
     \details
-    This function can be used to use \link "https://en.cppreference.com/w/cpp/types/enable_if" 
+    This function can be used to use \link "https://en.cppreference.com/w/cpp/types/enable_if"
     SFINAE\endlink.
 
     \author  Lukas Reichmann
@@ -363,7 +369,7 @@ namespace nou
     The type that may be returned.
 
     \return
-    \ilc{nou::TrueConstant}, if the types \ilc{A}, \ilc{B} (and if given, \ilc{ARGS}) are the same, 
+    \ilc{nou::TrueConstant}, if the types \ilc{A}, \ilc{B} (and if given, \ilc{ARGS}) are the same,
     \ilc{nou::FalseConstant} if not.
 
     \brief
@@ -486,7 +492,7 @@ namespace nou
     Checks whether a type is a union type.
     */
     template<typename T>
-    struct IsEnum : BooleanConstant<std::is_union_v<T>>
+    struct IsUnion : BooleanConstant<std::is_union_v<T>>
     {};
 
     /**
@@ -836,7 +842,7 @@ namespace nou
     Checks whether a type is signed.
     */
     template<typename T>
-    struct IsEmpty : BooleanConstant<std::is_signed_v<T>>
+    struct IsSigned : BooleanConstant<std::is_signed_v<T>>
     {};
 
     /**
@@ -850,7 +856,7 @@ namespace nou
     Checks whether a type is unsigned.
     */
     template<typename T>
-    struct IsEmpty : BooleanConstant<std::is_unsigned_v<T>>
+    struct IsUnsigned : BooleanConstant<std::is_unsigned_v<T>>
     {};
 
     /**
@@ -900,7 +906,7 @@ namespace nou
     The type to check.
 
     \return
-    \ilc{nou::TrueConstant}, if \ilc{T} is trivially default constructible, \ilc{nou::FalseConstant} if it 
+    \ilc{nou::TrueConstant}, if \ilc{T} is trivially default constructible, \ilc{nou::FalseConstant} if it
     not.
 
     \brief
@@ -973,13 +979,13 @@ namespace nou
     The type to check.
 
     \return
-    \ilc{nou::TrueConstant}, if \ilc{T} is assignable, \ilc{nou::FalseConstant} if it not.
+    \ilc{nou::TrueConstant}, if \ilc{FROM} is assignable to \ilc{TO}, \ilc{nou::FalseConstant} if it not.
 
     \brief
-    Checks whether a type is assignable.
+    Checks whether a type is assignable to another.
     */
-    template<typename T>
-    struct IsAssignable : BooleanConstant<std::is_assignable_v<T>>
+    template<typename TO, typename FROM>
+    struct IsAssignable : BooleanConstant<std::is_assignable_v<TO, FROM>>
     {};
 
     /**
@@ -987,42 +993,14 @@ namespace nou
     The type to check.
 
     \return
-    \ilc{nou::TrueConstant}, if \ilc{T} is trivially assignable, \ilc{nou::FalseConstant} if it not.
-
-    \brief
-    Checks whether a type is trivially assignable.
-    */
-    template<typename T>
-    struct IsTriviallyAssignable : BooleanConstant<std::is_trivially_assignable_v<T>>
-    {};
-
-    /**
-    \tparam T
-    The type to check.
-
-    \return
-    \ilc{nou::TrueConstant}, if \ilc{T} is default assignable, \ilc{nou::FalseConstant} if it not.
-
-    \brief
-    Checks whether a type is default assignable.
-    */
-    template<typename T>
-    struct IsDefaultAssignable : BooleanConstant<std::is_default_assignable_v<T>>
-    {};
-
-    /**
-    \tparam T
-    The type to check.
-
-    \return
-    \ilc{nou::TrueConstant}, if \ilc{T} is trivially default assignable, \ilc{nou::FalseConstant} if it
+    \ilc{nou::TrueConstant}, if \ilc{FROM} is trivially assignable to \ilc{TO}, \ilc{nou::FalseConstant} if it
     not.
 
     \brief
-    Checks whether a type is trivially default assignable.
+    Checks whether a type is trivially assignable to another.
     */
-    template<typename T>
-    struct IsTriviallyDefaultAssignable : BooleanConstant<std::is_trivially_default_assignable_v<T>>
+    template<typename TO, typename FROM>
+    struct IsTriviallyAssignable : BooleanConstant<std::is_trivially_assignable_v<TO, FROM>>
     {};
 
     /**
@@ -1143,7 +1121,7 @@ namespace nou
     /**
     \tparam BASE
     The base type to check.
-    
+
     \tparam DERIVED
     The derived type to check.
 
@@ -1160,7 +1138,7 @@ namespace nou
     /**
     \tparam FROM
     The base type to convert from.
-         
+
     \tparam TO
     The derived type to convert to.
 
@@ -1177,12 +1155,12 @@ namespace nou
     /**
     \tparam F
     The function to invoke.
-         
+
     \tparam ARGS
     The parameter types to invoke \ilc{F} with.
 
     \return
-    \ilc{nou::TrueConstant}, if \ilc{F} is invokable with the parameters of the types \ilc{ARGS}, 
+    \ilc{nou::TrueConstant}, if \ilc{F} is invokable with the parameters of the types \ilc{ARGS},
     \ilc{nou::FalseConstant} if it not.
 
     \brief
@@ -1195,12 +1173,12 @@ namespace nou
     /**
     \tparam F
     The function to invoke.
-    
+
     \tparam ARGS
     The parameter types to invoke \ilc{F} with.
 
     \return
-    \ilc{nou::TrueConstant}, if \ilc{F} is invokable with the parameters of the types \ilc{ARGS} and returns 
+    \ilc{nou::TrueConstant}, if \ilc{F} is invokable with the parameters of the types \ilc{ARGS} and returns
     a result that is convertible to \ilc{R}, \ilc{nou::FalseConstant} if it not.
 
     \brief
@@ -1406,6 +1384,127 @@ namespace nou
     */
     template<typename T>
     using AddLValueReferenceType = typename AddLValueReference<T>::Type;
+
+    /**
+    \tparam T
+    The type to modify.
+
+    \return
+    The pointer type of \ilc{T}.
+
+    \brief
+    Returns the pointer type of \ilc{T}.
+    */
+    template<typename T>
+    struct AddPointer : Identity<T *>
+    {};
+
+    /**
+    \tparam T
+    The type to modify.
+
+    \brief
+    The result of \ilc{nou::AddPointer}.
+
+    \author  Lukas Reichmann
+    \version 1.1.0.0
+    \since   1.1.0.0
+    */
+    template<typename T>
+    using AddPointerType = typename AddPointer<T>::Type;
+
+    /**
+    \tparam T
+    The type to modify.
+
+    \return
+    The type that \ilc{T} points to.
+
+    \brief
+    Returns type that a pointer points to.
+
+    \details
+    If \ilc{T} is not a pointer type, the result will be \ilc{T}.
+    */
+    template<typename T>
+    struct RemovePointer : Identity<T>
+    {};
+
+    ///\cond
+    template<typename T>
+    struct RemovePointer<T *> : Identity<T>
+    {};
+    ///\endcond
+
+    /**
+    \tparam T
+    The type to modify.
+
+    \brief
+    The result of \ilc{nou::RemovePointer}.
+
+    \author  Lukas Reichmann
+    \version 1.1.0.0
+    \since   1.1.0.0
+    */
+    template<typename T>
+    using RemovePointerType = typename RemovePointer<T>::Type;
+
+    /**
+    \tparam F
+    The callable type.
+
+    \return
+    The result of calling a callable of type \ilc{F} with the parameters of the types \ilc{ARGS}.
+
+    \brief
+    Returns the result of calling a callable of type \ilc{F} with the parameters of the types \ilc{ARGS}.
+    */
+    template<typename F, typename... ARGS>
+    struct InvokeResult : Identity<std::invoke_result<F, ARGS...>>
+    {};
+
+    /**
+    \tparam T
+    The type to modify.
+
+    \brief
+    The result of \ilc{nou::InvokeResult}.
+
+    \author  Lukas Reichmann
+    \version 1.1.0.0
+    \since   1.1.0.0
+    */
+    template<typename F, typename... ARGS>
+    using InvokeResultType = typename InvokeResult<F, ARGS...>::Type;
+
+    /**
+    \tparam ARGS
+    Any types, will be ignored.
+
+    \return
+    \ilc{void}.
+
+    \brief
+    Always returns \ilc{void}.
+    */
+    template<typename... ARGS>
+    struct Void : Identity<void>
+    {};
+
+    /**
+    \tparam ARGS
+    Any types, will be ignored.
+
+    \brief
+    The result of \ilc{nou::Void}.
+
+    \author  Lukas Reichmann
+    \version 1.1.0.0
+    \since   1.1.0.0
+    */
+    template<typename... ARGS>
+    using VoidType = typename Void<ARGS...>::Type;
 
 } // namespace nou
 

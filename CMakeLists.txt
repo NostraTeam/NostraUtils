@@ -150,6 +150,7 @@ if(BUILD_TESTING)
 	nou_add_test(notnull.wt)
 	nou_add_test(pair.wt)
 	nou_add_test(declval.wt)
+    nou_add_test(meta.wt)
 endif()
 # Tests end
 
@@ -173,6 +174,7 @@ if(NOU_BUILD_EXAMPLES)
 	nou_add_example(assert.ex)
 	nou_add_example(notnull.ex)
 	nou_add_example(declval.ex)
+    nou_add_example(meta.ex)
 endif()
 # Examples end
 
