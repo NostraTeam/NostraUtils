@@ -2,7 +2,7 @@ dist: trusty
 sudo: false
 language: cpp
 
-addons:
+addons: 
     apt:
         sources:
             - ubuntu-toolchain-r-test
@@ -10,6 +10,7 @@ addons:
             - g++-7
 
 script:
-    - CXX=/usr/bin/g++-7 CC=/usr/bin/gcc-7 cmake .
+    - CXX=/usr/bin/g++-7 CC=/usr/bin/gcc-7 cmake -DNOU_BUILD_DOC=OFF -DNOU_BUILD_EXAMPLES=OFF -DNOU_BUILD_SHARED=OFF -DBUILD_TESTING=ON .
     - cmake --build . -- -j2
+    - ctest
   
