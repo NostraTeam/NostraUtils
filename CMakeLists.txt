@@ -151,6 +151,7 @@ if(BUILD_TESTING)
 	nou_add_test(pair.wt)
 	nou_add_test(util.wt)
     nou_add_test(meta.wt)
+    nou_add_test(optional.wt)
 endif()
 # Tests end
 

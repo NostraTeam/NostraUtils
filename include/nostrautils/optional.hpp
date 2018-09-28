@@ -39,20 +39,20 @@ An example that demonstrates the usage of the optional component.
 #    include "nostrautils/meta.hpp"
 #endif
 
+#ifndef NOU_UTIL_HPP
+#    include "nostrautils/util.hpp"
+#endif
+
 namespace nou
 {
     namespace internal
     {
-        struct InvalidOpt
+        struct InvalidOpt final
         {
-        public:
-            constexpr static InvalidOpt INSTANCE;
-
-        private:
-            constexpr InvalidOpt() = default;
+            // empty dummy type
         };
 
-        constexpr InvalidOpt InvalidOpt::INSTANCE;
+        constexpr InvalidOpt INVALID_OPT_INSTANCE = InvalidOpt();
     } // namespace internal
 
     template<typename T>
@@ -61,38 +61,15 @@ namespace nou
     private:
         /**
         \brief
-        A union that contains the wrapped object.
-
-        \details
-        A union was chosen because it does not need to be constructed.
-
-        It would also be possible to use a byte array (with the correct size and alignment).
+        A byte array that contains the wrapped object.
         */
-        union Data
-        {
-            T m_data;
-
-            constexpr Data() = default;
-
-            constexpr Data(const T &t);
-
-            Data(T &&t);
-
-            template<typename... ARGS, typename = EnableIfType<IsConstructible<T, ARGS...>::value>>
-            constexpr Data(ARGS &&... args);
-        };
+        alignas(T) byte m_dataStorage[sizeof(T)];
 
         /**
         \brief
         A reference to \ilc{m_dataInstance.m_data}. For convenience.
         */
         T &m_data;
-
-        /**
-        \brief
-        The wrapped object.
-        */
-        Data m_dataInstance;
 
         /**
         \brief
@@ -125,7 +102,8 @@ namespace nou
 
         /**
         \tparam OT
-        The type of the object that the passed instance wraps around.
+        The type of the object that the passed instance wraps around. \ilc{T} must be constructible from this
+        type.
 
         \param other
         The instance that holds the object that will be copied into the new instance.
@@ -138,11 +116,12 @@ namespace nou
         The wrapped object will not be copied in any way; such copy will only occur if \ilc{other} is valid.
         */
         template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-        constexpr Optional(const Optional<OT> &other);
+        constexpr Optional(const Optional<OT> &other) noexcept;
 
         /**
         \tparam OT
-        The type of the object that the passed instance wraps around.
+        The type of the object that the passed instance wraps around. \ilc{T} must be constructible from this
+        type.
 
         \param other
         The instance that holds the object that will be moved into the new instance.
@@ -156,7 +135,7 @@ namespace nou
         valid.
         */
         template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-        Optional(Optional<OT> &&other);
+        Optional(Optional<OT> &&other) noexcept;
 
         /**
         \param invalidOpt
@@ -169,7 +148,7 @@ namespace nou
         This constructor should never be used explicitly, its sole purpose is to be used with
         \ilc{nou::invalidOpt()}.
         */
-        constexpr Optional(const internal::InvalidOpt &invalidOpt);
+        constexpr Optional(const internal::InvalidOpt &invalidOpt) noexcept;
 
         /**
         \param other
@@ -183,7 +162,7 @@ namespace nou
         The wrapped object will not be copied in any way; such copy will only occur if \ilc{other} is
         valid.
         */
-        constexpr Optional(const Optional &other);
+        constexpr Optional(const Optional &other) noexcept;
 
         /**
 
@@ -198,7 +177,42 @@ namespace nou
         The wrapped object will not be moved in any way; such move operation will only occur if \ilc{other} is
         valid.
         */
-        Optional(Optional &&other);
+        Optional(Optional &&other) noexcept;
+
+        /**
+        \return
+        \ilc{true} if the wrapped object is valid, \ilc{false} if not.
+
+        \brief
+        Returns whether the wrapped object is valid or not.
+        */
+        constexpr boolean isValid() const noexcept;
+
+        /**
+        \return
+        The wrapped object.
+
+        \brief
+        Returns the wrapped object.
+
+        \warning
+        The return value of this method is undefined if the wrapped object is not valid (\ilc{isValid()}
+        returns false).
+        */
+        T &get() noexcept;
+
+        /**
+        \return
+        The wrapped object.
+
+        \brief
+        Returns the wrapped object.
+
+        \warning
+        The return value of this method is undefined if the wrapped object is not valid (\ilc{isValid()}
+        returns false).
+        */
+        constexpr const T &get() const noexcept;
     };
 
     /**
@@ -229,69 +243,83 @@ namespace nou
     constexpr const internal::InvalidOpt &invalidOpt();
 
     template<typename T>
-    constexpr Optional<T>::Data::Data(const T &t) : m_data(t)
-    {}
-
-    template<typename T>
-    Optional<T>::Data::Data(T &&t) : m_data(static_cast<T &&>(t))
+    constexpr Optional<T>::Optional() noexcept : m_data(*reinterpret_cast<T *>(m_dataStorage)), m_valid(false)
     {}
 
     template<typename T>
     template<typename... ARGS, typename>
-    constexpr Optional<T>::Data::Data(ARGS &&... args) // TODO forward args
-    {}
-
-    template<typename T>
-    constexpr Optional<T>::Optional() noexcept : m_data(m_dataInstance.m_data), m_valid(false)
-    {}
-
-    template<typename T>
-    template<typename... ARGS, typename = EnableIfType<IsConstructible<T, ARGS...>::value>>
-    explicit constexpr Optional<T>::Optional(ARGS &&... args) noexcept :
-        m_data(m_dataInstance.m_data),
-        m_dataInstance(), // TODO: forward args
+    constexpr Optional<T>::Optional(ARGS &&... args) noexcept :
+        m_data(*reinterpret_cast<T *>(m_dataStorage)),
         m_valid(true)
-    {}
+    {
+        new(m_dataStorage) T(nou::forward<ARGS>(args)...);
+    }
 
     template<typename T>
-    template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-    constexpr Optional<T>::Optional(const Optional<OT> &other) :
-        m_data(m_dataInstance.m_data),
-        m_valid(other.m_valid),
-        m_dataInstance(other.m_valid ? Data(other.m_data) : Data())
-    {}
+    template<typename OT, typename>
+    constexpr Optional<T>::Optional(const Optional<OT> &other) noexcept :
+        m_data(*reinterpret_cast<T *>(m_dataStorage)),
+        m_valid(other.isValid())
+    {
+        if(m_valid)
+            new(m_dataStorage) T(other.get());
+    }
 
     template<typename T>
-    template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-    Optional<T>::Optional(Optional<OT> &&other) :
-        m_data(m_dataInstance.m_data),
-        m_valid(other.m_valid),
-        m_dataInstance(other.m_valid ? Data(static_cast<OT &&>(other.m_data)) : Data())
-    {}
+    template<typename OT, typename>
+    Optional<T>::Optional(Optional<OT> &&other) noexcept :
+        m_data(*reinterpret_cast<T *>(m_dataStorage)),
+        m_valid(other.isValid())
+    {
+        if(m_valid)
+            new(m_dataStorage) T(nou::move(other.get()));
+    }
 
     template<typename T>
-    constexpr Optional<T>::Optional(const internal::InvalidOpt &invalidOpt) :
-        m_data(m_dataInstance.m_data),
+    constexpr Optional<T>::Optional(const internal::InvalidOpt &invalidOpt) noexcept :
+        m_data(*reinterpret_cast<T *>(m_dataStorage)),
         m_valid(false)
     {}
 
     template<typename T>
-    constexpr Optional<T>::Optional(const Optional &other) :
-        m_data(m_dataInstance.m_data),
-        m_valid(other.m_valid),
-        m_dataInstance(other.m_valid ? Data(other.m_data) : Data())
-    {}
+    constexpr Optional<T>::Optional(const Optional &other) noexcept :
+        m_data(*reinterpret_cast<T *>(m_dataStorage)),
+        m_valid(other.m_valid)
+    {
+        if(m_valid)
+            new(m_dataStorage) T(other.m_data);
+    }
 
     template<typename T>
-    Optional<T>::Optional(Optional &&other) :
-        m_data(m_dataInstance.m_data),
-        m_valid(other.m_valid),
-        m_dataInstance(other.m_valid ? Data(static_cast<T &&>(other.m_data)) : Data())
-    {}
+    Optional<T>::Optional(Optional &&other) noexcept :
+        m_data(*reinterpret_cast<T *>(m_dataStorage)),
+        m_valid(other.m_valid)
+    {
+        if(m_valid)
+            new(m_dataStorage) T(nou::move(other.m_data));
+    }
+
+    template<typename T>
+    constexpr boolean Optional<T>::isValid() const noexcept
+    {
+        return m_valid;
+    }
+
+    template<typename T>
+    T &Optional<T>::get() noexcept
+    {
+        return m_data;
+    }
+
+    template<typename T>
+    constexpr const T &Optional<T>::get() const noexcept
+    {
+        return m_data;
+    }
 
     constexpr const internal::InvalidOpt &invalidOpt()
     {
-        return internal::InvalidOpt::INSTANCE;
+        return internal::INVALID_OPT_INSTANCE;
     }
 } // namespace nou
 
