@@ -56,8 +56,8 @@ An example that demonstrates the usage of the notnull component.
 #    include "nostrautils/types.hpp"
 #endif
 
-#ifndef NOU_DECLVAL_HPP
-#    include "nostrautils/declval.hpp"
+#ifndef NOU_UTIL_HPP
+#    include "nostrautils/util.hpp"
 #endif
 
 #ifndef NOU_META_HPP
