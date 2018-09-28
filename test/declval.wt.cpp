@@ -8,7 +8,6 @@ A test for declval.
 */
 
 // TODO: add test that checks that the program does not compile when the returned value is actually used
-// TODO: use nou meta functions
 
 #ifndef NOU_TYPES_HPP
 #    include "nostrautils/types.hpp"
@@ -16,6 +15,10 @@ A test for declval.
 
 #ifndef NOU_DECLVAL_HPP
 #    include "nostrautils/declval.hpp"
+#endif
+
+#ifndef NOU_META_HPP
+#    include "nostrautils/meta.hpp"
 #endif
 
 #include <cstdlib>
@@ -33,6 +36,6 @@ A test for declval.
 
 int main()
 {
-    NOU_TEST_IS_TRUE(std::is_same<decltype(nou::declval<nou::int32>()), nou::int32 &&>::value);
-    NOU_TEST_IS_TRUE(std::is_same<decltype(nou::declval<void>()), void>::value);
+    NOU_TEST_IS_TRUE(nou::AreSame<decltype(nou::declval<nou::int32>()), nou::int32 &&>::value);
+    NOU_TEST_IS_TRUE(nou::AreSame<decltype(nou::declval<void>()), void>::value);
 }

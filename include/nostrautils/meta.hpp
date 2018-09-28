@@ -321,8 +321,8 @@ namespace nou
     Returns \ilc{T} if \ilc{B} is \ilc{true}, otherwise there will be no return type.
 
     \details
-    This function can be used to use \link "https://en.cppreference.com/w/cpp/types/enable_if"
-    SFINAE\endlink.
+    This function can be used to use <a href="https://en.cppreference.com/w/cpp/types/enable_if">
+    SFINAE</a>.
 
     \author  Lukas Reichmann
     \version 1.1.0.0
@@ -863,28 +863,36 @@ namespace nou
     \tparam T
     The type to check.
 
+    \tparam ARGS
+    The parameter types to construct from.
+
     \return
-    \ilc{nou::TrueConstant}, if \ilc{T} is constructible, \ilc{nou::FalseConstant} if it not.
+    \ilc{nou::TrueConstant}, if \ilc{T} is constructible with instances of the types \ilc{ARGS},
+    \ilc{nou::FalseConstant} if it not.
 
     \brief
     Checks whether a type is constructible.
     */
-    template<typename T>
-    struct IsConstructible : BooleanConstant<std::is_constructible_v<T>>
+    template<typename T, typename... ARGS>
+    struct IsConstructible : BooleanConstant<std::is_constructible_v<T, ARGS...>>
     {};
 
     /**
     \tparam T
     The type to check.
 
+    \tparam ARGS
+    The parameter types to construct from.
+
     \return
-    \ilc{nou::TrueConstant}, if \ilc{T} is trivially constructible, \ilc{nou::FalseConstant} if it not.
+    \ilc{nou::TrueConstant}, if \ilc{T} is trivially constructible with instances of the types \ilc{ARGS},
+    \ilc{nou::FalseConstant} if it not.
 
     \brief
     Checks whether a type is trivially constructible.
     */
-    template<typename T>
-    struct IsTriviallyConstructible : BooleanConstant<std::is_trivially_constructible_v<T>>
+    template<typename T, typename... ARGS>
+    struct IsTriviallyConstructible : BooleanConstant<std::is_trivially_constructible_v<T, ARGS...>>
     {};
 
     /**

@@ -56,6 +56,14 @@ An example that demonstrates the usage of the notnull component.
 #    include "nostrautils/types.hpp"
 #endif
 
+#ifndef NOU_DECLVAL_HPP
+#    include "nostrautils/declval.hpp"
+#endif
+
+#ifndef NOU_META_HPP
+#    include "nostrautils/meta.hpp"
+#endif
+
 #include <cstdlib>
 #include <type_traits>
 #include <utility>
@@ -123,26 +131,14 @@ namespace nou
         \since   1.1.0.0
         */
         template<typename T>
-        struct NotNullMakeRefType
-        {
-            /**
-            \brief
-            The 'return type' of this meta function.
-
-            \author  Lukas Reichmann
-            \version 1.1.0.0
-            \since   1.1.0.0
-            */
-            using Type = T &;
-        };
+        struct NotNullMakeRefType : Identity<T &>
+        {};
 
         ///\cond
         // No need to have this specialization in the documentation
         template<typename T>
-        struct NotNullMakeRefType<T *>
-        {
-            using Type = T *;
-        };
+        struct NotNullMakeRefType<T *> : Identity<T *>
+        {};
         ///\endcond
     } // namespace internal
 
@@ -766,7 +762,9 @@ namespace nou
         \version 1.1.0.0
         \since   1.1.0.0
         */
-        template<typename PointerType>
+        template<typename PointerType,
+                 typename = nou::EnableIfType<
+                     nou::IsConstructible<NotNull<T>, decltype(m_ptr + nou::declval<PointerType>())>::value>>
         constexpr NotNull operator+(const PointerType &offset) const;
 
         /**
@@ -816,9 +814,9 @@ namespace nou
         \since   1.1.0.0
         */
         template<typename PointerType,
-                 typename = std::enable_if_t<
-                     std::is_constructible<NotNull<T>, decltype(m_ptr - std::declval<PointerType>())>::value>>
-        constexpr NotNull operator-(const PointerType &offset) const; // TODO: use nou meta functions
+                 typename = nou::EnableIfType<
+                     nou::IsConstructible<NotNull<T>, decltype(m_ptr - nou::declval<PointerType>())>::value>>
+        constexpr NotNull operator-(const PointerType &offset) const;
 
         NotNull &operator=(nullptrType) = delete;
 
@@ -1292,7 +1290,7 @@ namespace nou
     }
 
     template<typename T>
-    template<typename PointerType>
+    template<typename PointerType, typename>
     constexpr NotNull<T> NotNull<T>::operator+(const PointerType &offset) const
     {
         return NotNull<T>(m_ptr + offset);
