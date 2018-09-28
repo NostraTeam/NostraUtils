@@ -1384,7 +1384,7 @@ namespace nou
     The type to modify.
 
     \brief
-    The result of \ilc{nou::AddRValueReference}.
+    The result of \ilc{nou::AddLValueReference}.
 
     \author  Lukas Reichmann
     \version 1.1.0.0
@@ -1392,6 +1392,20 @@ namespace nou
     */
     template<typename T>
     using AddLValueReferenceType = typename AddLValueReference<T>::Type;
+
+    /**
+    \tparam T
+    The type to modify.
+
+    \brief
+    The result of \ilc{nou::AddRValueReference}.
+
+    \author  Lukas Reichmann
+    \version 1.1.0.0
+    \since   1.1.0.0
+    */
+    template<typename T>
+    using AddRValueReferenceType = typename AddRValueReference<T>::Type;
 
     /**
     \tparam T
