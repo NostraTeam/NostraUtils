@@ -11,10 +11,18 @@ A component that provides a data structure that may or may not hold a value of a
 \details
 This data structure has two main uses:
 <ul>
-    <li></li>
+    <li>
+        Delayed initialization: Allocate memory for an object without calling the constructor of that object.
+    </li>
+    <li>
+        Returning invalid objects: Return an object that is not initialized.
+    </li>
 </ul>
 
 \par_example
+\code{.cpp}
+
+\endcode
 .....
 
 For a more detailed example, see \link optional.ex.cpp here\endlink.
@@ -25,8 +33,6 @@ For a more detailed example, see \link optional.ex.cpp here\endlink.
 
 An example that demonstrates the usage of the optional component.
 */
-
-// TODO: remove all static_cast<T&&>() with nou::move()
 
 #ifndef NOU_OPTIONAL_HPP
 #define NOU_OPTIONAL_HPP
@@ -82,7 +88,7 @@ namespace nou
         \brief
         Constructs a new instance in an invalid state.
         */
-        constexpr Optional() noexcept;
+        inline Optional() noexcept;
 
         /**
         \tparam ARGS
@@ -98,7 +104,7 @@ namespace nou
         parameters.
          */
         template<typename... ARGS, typename = EnableIfType<IsConstructible<T, ARGS...>::value>>
-        explicit constexpr Optional(ARGS &&... args) noexcept;
+        explicit inline Optional(ARGS &&... args) noexcept;
 
         /**
         \tparam OT
@@ -116,7 +122,7 @@ namespace nou
         The wrapped object will not be copied in any way; such copy will only occur if \ilc{other} is valid.
         */
         template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-        constexpr Optional(const Optional<OT> &other) noexcept;
+        inline Optional(const Optional<OT> &other) noexcept;
 
         /**
         \tparam OT
@@ -133,9 +139,11 @@ namespace nou
         If \ilc{other} is not valid, the instance under construction will be initialized in an invalid state.
         The wrapped object will not be moved in any way; such move operation will only occur if \ilc{other} is
         valid.
+
+        Also, even if the wrapped object of \ilc{other} will be moved, \ilc{other} will stay valid.
         */
         template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-        Optional(Optional<OT> &&other) noexcept;
+        inline Optional(Optional<OT> &&other) noexcept;
 
         /**
         \param invalidOpt
@@ -148,7 +156,7 @@ namespace nou
         This constructor should never be used explicitly, its sole purpose is to be used with
         \ilc{nou::invalidOpt()}.
         */
-        constexpr Optional(const internal::InvalidOpt &invalidOpt) noexcept;
+        inline Optional(const internal::InvalidOpt &invalidOpt) noexcept;
 
         /**
         \param other
@@ -162,7 +170,13 @@ namespace nou
         The wrapped object will not be copied in any way; such copy will only occur if \ilc{other} is
         valid.
         */
-        constexpr Optional(const Optional &other) noexcept;
+        inline Optional(const Optional &other) noexcept;
+
+        /**
+        \brief
+        Destroys the instance and, if valid, the wrapped object.
+        */
+        inline ~Optional() noexcept;
 
         /**
 
@@ -176,8 +190,10 @@ namespace nou
         If \ilc{other} is not valid, the instance under construction will be initialized in an invalid state.
         The wrapped object will not be moved in any way; such move operation will only occur if \ilc{other} is
         valid.
+
+        Also, even if the wrapped object of \ilc{other} will be moved, \ilc{other} will stay valid.
         */
-        Optional(Optional &&other) noexcept;
+        inline Optional(Optional &&other) noexcept;
 
         /**
         \return
@@ -186,7 +202,7 @@ namespace nou
         \brief
         Returns whether the wrapped object is valid or not.
         */
-        constexpr boolean isValid() const noexcept;
+        inline boolean isValid() const noexcept;
 
         /**
         \return
@@ -199,7 +215,7 @@ namespace nou
         The return value of this method is undefined if the wrapped object is not valid (\ilc{isValid()}
         returns false).
         */
-        T &get() noexcept;
+        inline T &get() noexcept;
 
         /**
         \return
@@ -212,7 +228,19 @@ namespace nou
         The return value of this method is undefined if the wrapped object is not valid (\ilc{isValid()}
         returns false).
         */
-        constexpr const T &get() const noexcept;
+        inline const T &get() const noexcept;
+
+        /**
+        \return
+        \ilc{true} if the wrapped object is valid, \ilc{false} if not.
+
+        \brief
+        Returns whether the wrapped object is valid or not.
+
+        \details
+        Returns the same as \ilc{isValid()}.
+        */
+        inline operator boolean() const noexcept;
     };
 
     /**
@@ -234,21 +262,20 @@ namespace nou
         //the same as:
         //return b ? 5 : nou::Optional<nou::int32>();
     }
+    \endcode
 
     \warning
     Using \ilc{auto} with \ilc{nou::invalidOpt()} will not result in an instance of \ilc{nou::Optional}.
-
-    \endcode
     */
     constexpr const internal::InvalidOpt &invalidOpt();
 
     template<typename T>
-    constexpr Optional<T>::Optional() noexcept : m_data(*reinterpret_cast<T *>(m_dataStorage)), m_valid(false)
+    inline Optional<T>::Optional() noexcept : m_data(*reinterpret_cast<T *>(m_dataStorage)), m_valid(false)
     {}
 
     template<typename T>
     template<typename... ARGS, typename>
-    constexpr Optional<T>::Optional(ARGS &&... args) noexcept :
+    inline Optional<T>::Optional(ARGS &&... args) noexcept :
         m_data(*reinterpret_cast<T *>(m_dataStorage)),
         m_valid(true)
     {
@@ -257,32 +284,36 @@ namespace nou
 
     template<typename T>
     template<typename OT, typename>
-    constexpr Optional<T>::Optional(const Optional<OT> &other) noexcept :
+    inline Optional<T>::Optional(const Optional<OT> &other) noexcept :
         m_data(*reinterpret_cast<T *>(m_dataStorage)),
         m_valid(other.isValid())
     {
         if(m_valid)
+        {
             new(m_dataStorage) T(other.get());
+        }
     }
 
     template<typename T>
     template<typename OT, typename>
-    Optional<T>::Optional(Optional<OT> &&other) noexcept :
+    inline Optional<T>::Optional(Optional<OT> &&other) noexcept :
         m_data(*reinterpret_cast<T *>(m_dataStorage)),
         m_valid(other.isValid())
     {
         if(m_valid)
-            new(m_dataStorage) T(nou::move(other.get()));
+        {
+            new(m_dataStorage) T(other.get());
+        }
     }
 
     template<typename T>
-    constexpr Optional<T>::Optional(const internal::InvalidOpt &invalidOpt) noexcept :
+    inline Optional<T>::Optional(const internal::InvalidOpt &invalidOpt) noexcept :
         m_data(*reinterpret_cast<T *>(m_dataStorage)),
         m_valid(false)
     {}
 
     template<typename T>
-    constexpr Optional<T>::Optional(const Optional &other) noexcept :
+    inline Optional<T>::Optional(const Optional &other) noexcept :
         m_data(*reinterpret_cast<T *>(m_dataStorage)),
         m_valid(other.m_valid)
     {
@@ -291,30 +322,47 @@ namespace nou
     }
 
     template<typename T>
-    Optional<T>::Optional(Optional &&other) noexcept :
+    inline Optional<T>::Optional(Optional &&other) noexcept :
         m_data(*reinterpret_cast<T *>(m_dataStorage)),
         m_valid(other.m_valid)
     {
         if(m_valid)
-            new(m_dataStorage) T(nou::move(other.m_data));
+        {
+            new(m_dataStorage) T(other.get());
+        }
     }
 
     template<typename T>
-    constexpr boolean Optional<T>::isValid() const noexcept
+    inline Optional<T>::~Optional() noexcept
+    {
+        if(m_valid)
+        {
+            m_data.~T();
+        }
+    }
+
+    template<typename T>
+    inline boolean Optional<T>::isValid() const noexcept
     {
         return m_valid;
     }
 
     template<typename T>
-    T &Optional<T>::get() noexcept
+    inline T &Optional<T>::get() noexcept
     {
         return m_data;
     }
 
     template<typename T>
-    constexpr const T &Optional<T>::get() const noexcept
+    inline const T &Optional<T>::get() const noexcept
     {
         return m_data;
+    }
+
+    template<typename T>
+    inline Optional<T>::operator boolean() const noexcept
+    {
+        return isValid();
     }
 
     constexpr const internal::InvalidOpt &invalidOpt()

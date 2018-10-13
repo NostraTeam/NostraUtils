@@ -75,14 +75,13 @@ install(DIRECTORY "include"
 		"."
 	COMPONENT
 		"Develop")
+		
 # Install the additionally configured file(s)
 install(DIRECTORY "${PROJECT_BINARY_DIR}/include/" 
 	DESTINATION 
 		"include"
 	COMPONENT
 		"Develop")
-
-
 
 if(NOU_BUILD_DOC)
 	
