@@ -167,7 +167,8 @@ namespace nou
             If this constructor is called, \ilc{other} needs to be valid.
             */
             template<typename OT>
-            constexpr OptionalStorage(const DummyValid &dummy, const Optional<OT> &other) noexcept;
+            constexpr OptionalStorage(const DummyValid &dummy, const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value);
 
             /**
             \tparam OT
@@ -183,7 +184,8 @@ namespace nou
             Constructs a new instance in an invalid state.
             */
             template<typename OT>
-            constexpr OptionalStorage(const DummyInvalid &dummy, const Optional<OT> &other) noexcept;
+            constexpr OptionalStorage(const DummyInvalid &dummy, const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value);
 
         protected:
             /**
@@ -206,7 +208,7 @@ namespace nou
             passed parameters.
             */
             template<typename... ARGS, typename = EnableIfType<IsConstructible<Type, ARGS...>::value>>
-            constexpr OptionalStorage(ARGS &&... args) noexcept;
+            constexpr OptionalStorage(ARGS &&... args) noexcept(IsNothrowConstructible<Type, ARGS...>::value);
 
             /**
             \tparam OT
@@ -225,7 +227,8 @@ namespace nou
             is valid.
             */
             template<typename OT>
-            constexpr OptionalStorage(const Optional<OT> &other) noexcept;
+            constexpr OptionalStorage(const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value);
 
             /**
             \brief
@@ -320,7 +323,8 @@ namespace nou
             If this constructor is called, \ilc{other} needs to be valid.
             */
             template<typename OT>
-            constexpr OptionalStorage(const DummyValid &dummy, const Optional<OT> &other) noexcept;
+            constexpr OptionalStorage(const DummyValid &dummy, const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value);
 
             /**
             \tparam OT
@@ -336,7 +340,8 @@ namespace nou
             Constructs a new instance in an invalid state.
             */
             template<typename OT>
-            constexpr OptionalStorage(const DummyInvalid &dummy, const Optional<OT> &other) noexcept;
+            constexpr OptionalStorage(const DummyInvalid &dummy, const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value);
 
         protected:
             /**
@@ -359,7 +364,7 @@ namespace nou
             passed parameters.
             */
             template<typename... ARGS, typename = EnableIfType<IsConstructible<Type, ARGS...>::value>>
-            inline OptionalStorage(ARGS &&... args) noexcept;
+            inline OptionalStorage(ARGS &&... args) noexcept(IsNothrowConstructible<Type, ARGS...>::value);
 
             /**
             \tparam OT
@@ -378,19 +383,20 @@ namespace nou
             is valid.
             */
             template<typename OT>
-            inline OptionalStorage(const Optional<OT> &other) noexcept;
+            inline OptionalStorage(const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value);
 
             /**
             \brief
             If it is valid, calls the destructor of the wrapped object.
             */
-            void destroy() noexcept;
+            void destroy() noexcept(IsNothrowDestructible<Type>::value);
 
             /**
             \brief
             Calls \ilc{destroy()}.
             */
-            ~OptionalStorage() noexcept;
+            ~OptionalStorage() noexcept(IsNothrowDestructible<Type>::value);
         };
 
     } // namespace internal
@@ -436,7 +442,7 @@ namespace nou
         parameters.
         */
         template<typename... ARGS, typename = EnableIfType<IsConstructible<T, ARGS...>::value>>
-        constexpr Optional(ARGS &&... args) noexcept;
+        constexpr Optional(ARGS &&... args) noexcept(IsNothrowConstructible<Type, ARGS...>::value);
 
         /**
         \tparam OT
@@ -454,7 +460,8 @@ namespace nou
         The wrapped object will not be copied in any way; such copy will only occur if \ilc{other} is valid.
         */
         template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-        constexpr Optional(const Optional<OT> &other) noexcept;
+        constexpr Optional(const Optional<OT> &other) noexcept(
+            IsNothrowConstructible<Type, const OT &>::value);
 
         /**
         \tparam OT
@@ -475,7 +482,7 @@ namespace nou
         Also, even if the wrapped object of \ilc{other} will be moved, \ilc{other} will stay valid.
         */
         template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-        inline Optional(Optional<OT> &&other) noexcept;
+        inline Optional(Optional<OT> &&other) noexcept(IsNothrowConstructible<Type, OT &&>::value);
 
         /**
         \param invalidOpt
@@ -502,7 +509,7 @@ namespace nou
         The wrapped object will not be copied in any way; such copy will only occur if \ilc{other} is
         valid.
         */
-        constexpr Optional(const Optional &other) noexcept;
+        constexpr Optional(const Optional &other) noexcept(IsNothrowCopyConstructible<Type>::value);
 
         /**
         \param other
@@ -518,7 +525,7 @@ namespace nou
 
         Also, even if the wrapped object of \ilc{other} will be moved, \ilc{other} will stay valid.
         */
-        inline Optional(Optional &&other) noexcept;
+        inline Optional(Optional &&other) noexcept(IsNothrowMoveConstructible<Type>::value);
 
         /**
         \return
@@ -712,7 +719,7 @@ namespace nou
         function does \b not use copy- or move-constructors.
         */
         template<typename... ARGS, typename = EnableIfType<IsConstructible<T, ARGS...>::value>>
-        inline void set(ARGS &&... args) noexcept;
+        inline void set(ARGS &&... args) noexcept(IsNothrowConstructible<Type, ARGS...>::value);
 
         /**
         \param invalidOpt
@@ -734,7 +741,7 @@ namespace nou
         If the wrapped object is valid, this will trigger the destruction of that object. After this function
         was called, \ilc{isValid()} will always return false.
         */
-        inline void reset() noexcept;
+        inline void reset() noexcept(IsNothrowDestructible<Type>::value);
 
         /**
         \copydoc nou::Optional::get()
@@ -763,7 +770,7 @@ namespace nou
         \ret_selfref_op
         */
         template<typename... ARGS>
-        inline Optional operator=(ARGS &&... args) noexcept;
+        inline Optional operator=(ARGS &&... args) noexcept(IsNothrowConstructible<Type, ARGS...>::value);
     };
 
     /**
@@ -808,8 +815,9 @@ namespace nou
 
     template<typename T, boolean TRIV_DEST>
     template<typename OT>
-    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(const DummyValid &,
-                                                                       const Optional<OT> &other) noexcept :
+    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(
+        const DummyValid &,
+        const Optional<OT> &other) noexcept(IsNothrowConstructible<Type, const OT &>::value) :
         m_data(other.get()),
         m_isValid(true)
     {}
@@ -817,7 +825,8 @@ namespace nou
     template<typename T, boolean TRIV_DEST>
     template<typename OT>
     constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(const DummyInvalid &,
-                                                                       const Optional<OT> &other) noexcept :
+                                                                       const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value) :
         m_dummy(),
         m_isValid(false)
     {}
@@ -830,14 +839,16 @@ namespace nou
 
     template<typename T, boolean TRIV_DEST>
     template<typename... ARGS, typename>
-    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(ARGS &&... args) noexcept :
+    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(ARGS &&... args) noexcept(
+                IsNothrowConstructible<Type, ARGS...>::value) :
         m_data(forward<ARGS>(args)...),
         m_isValid(true)
     {}
 
     template<typename T, boolean TRIV_DEST>
     template<typename OT>
-    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(const Optional<OT> &other) noexcept :
+    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value) :
         OptionalStorage(other.isValid() ? OptionalStorage(DummyValid{}, other)
                                         : OptionalStorage(DummyInvalid{}, other))
     {}
@@ -845,7 +856,8 @@ namespace nou
     template<typename T>
     template<typename OT>
     constexpr internal::OptionalStorage<T, false>::OptionalStorage(const DummyValid &,
-                                                                   const Optional<OT> &other) noexcept :
+                                                                   const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value) :
         m_data(other.get()),
         m_isValid(true)
     {}
@@ -853,7 +865,8 @@ namespace nou
     template<typename T>
     template<typename OT>
     constexpr internal::OptionalStorage<T, false>::OptionalStorage(const DummyInvalid &,
-                                                                   const Optional<OT> &other) noexcept :
+                                                                   const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value) :
         m_dummy(),
         m_isValid(false)
     {}
@@ -864,27 +877,29 @@ namespace nou
 
     template<typename T>
     template<typename... ARGS, typename>
-    inline internal::OptionalStorage<T, false>::OptionalStorage(ARGS &&... args) noexcept :
+    inline internal::OptionalStorage<T, false>::OptionalStorage(ARGS &&... args) noexcept(
+                IsNothrowConstructible<Type, ARGS...>::value) :
         m_data(forward<ARGS>(args)...),
         m_isValid(true)
     {}
 
     template<typename T>
     template<typename OT>
-    inline internal::OptionalStorage<T, false>::OptionalStorage(const Optional<OT> &other) noexcept :
+    inline internal::OptionalStorage<T, false>::OptionalStorage(const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value) :
         OptionalStorage(other.isValid() ? OptionalStorage(DummyValid{}, other)
                                         : OptionalStorage(DummyInvalid{}, other))
     {}
 
     template<typename T>
-    void internal::OptionalStorage<T, false>::destroy() noexcept
+    void internal::OptionalStorage<T, false>::destroy() noexcept(IsNothrowDestructible<T>::value)
     {
         if(m_isValid)
             m_data.~Type();
     }
 
     template<typename T>
-    internal::OptionalStorage<T, false>::~OptionalStorage() noexcept
+    internal::OptionalStorage<T, false>::~OptionalStorage() noexcept(IsNothrowDestructible<T>::value)
     {
         destroy();
     }
@@ -895,17 +910,20 @@ namespace nou
 
     template<typename T>
     template<typename... ARGS, typename>
-    constexpr Optional<T>::Optional(ARGS &&... args) noexcept : Base(forward<ARGS>(args)...)
+    constexpr Optional<T>::Optional(ARGS &&... args) noexcept(
+                IsNothrowConstructible<Type, ARGS...>::value) : Base(forward<ARGS>(args)...)
     {}
 
     template<typename T>
     template<typename OT, typename>
-    constexpr Optional<T>::Optional(const Optional<OT> &other) noexcept : Base(other)
+    constexpr Optional<T>::Optional(const Optional<OT> &other) noexcept(
+                IsNothrowConstructible<Type, const OT &>::value) : Base(other)
     {}
 
     template<typename T>
     template<typename OT, typename>
-    inline Optional<T>::Optional(Optional<OT> &&other) noexcept
+    inline Optional<T>::Optional(Optional<OT> &&other) noexcept(
+                IsNothrowConstructible<Type, OT &&>::value)
     {
         if(other.isValid())
             set(other.get());
@@ -916,11 +934,13 @@ namespace nou
     {}
 
     template<typename T>
-    constexpr Optional<T>::Optional(const Optional<T> &other) noexcept : Base(other)
+    constexpr Optional<T>::Optional(const Optional<T> &other) noexcept(
+                IsNothrowCopyConstructible<Type>::value) : Base(other)
     {}
 
     template<typename T>
-    inline Optional<T>::Optional(Optional<T> &&other) noexcept
+    inline Optional<T>::Optional(Optional<T> &&other) noexcept(
+                IsNothrowMoveConstructible<Type>::value)
     {
         if(other.isValid())
             set(other.get());
@@ -970,7 +990,8 @@ namespace nou
 
     template<typename T>
     template<typename... ARGS, typename>
-    inline void Optional<T>::set(ARGS &&... args) noexcept
+    inline void Optional<T>::set(ARGS &&... args) noexcept(
+                IsNothrowConstructible<Type, ARGS...>::value)
     {
         Base::destroy();
 
@@ -985,7 +1006,7 @@ namespace nou
     }
 
     template<typename T>
-    inline void Optional<T>::reset() noexcept
+    inline void Optional<T>::reset() noexcept(IsNothrowDestructible<Type>::value)
     {
         Base::destroy();
         Base::m_isValid = false;
@@ -1017,7 +1038,8 @@ namespace nou
 
     template<typename T>
     template<typename... ARGS>
-    inline auto Optional<T>::operator=(ARGS &&... args) noexcept -> Optional<T>
+    inline auto Optional<T>::operator=(ARGS &&... args) noexcept(
+                IsNothrowConstructible<Type, ARGS...>::value) -> Optional<T>
     {
         set(forward<ARGS>(args)...);
 
