@@ -899,6 +899,24 @@ namespace nou
     \tparam T
     The type to check.
 
+    \tparam ARGS
+    The parameter types to construct from.
+
+    \return
+    \ilc{nou::TrueConstant}, if \ilc{T} is nothrow constructible with instances of the types \ilc{ARGS},
+    \ilc{nou::FalseConstant} if it not.
+
+    \brief
+    Checks whether a type is nothrow constructible (the constructor in question is marked as \ilc{noexcept}).
+    */
+    template<typename T, typename... ARGS>
+    struct IsNothrowConstructible : BooleanConstant<std::is_nothrow_constructible_v<T, ARGS...>>
+    {};
+
+    /**
+    \tparam T
+    The type to check.
+
     \return
     \ilc{nou::TrueConstant}, if \ilc{T} is default constructible, \ilc{nou::FalseConstant} if it not.
 
@@ -922,6 +940,21 @@ namespace nou
     */
     template<typename T>
     struct IsTriviallyDefaultConstructible : BooleanConstant<std::is_trivially_default_constructible_v<T>>
+    {};
+
+    /**
+    \tparam T
+    The type to check.
+
+    \return
+    \ilc{nou::TrueConstant}, if \ilc{T} is nothrow default constructible, \ilc{nou::FalseConstant} if it not.
+
+    \brief
+    Checks whether a type is nothrow default constructible (the constructor in question is marked as
+    \ilc{noexcept}).
+    */
+    template<typename T>
+    struct IsNothrowDefaultConstructible : BooleanConstant<std::is_nothrow_default_constructible_v<T>>
     {};
 
     /**
@@ -958,6 +991,21 @@ namespace nou
     The type to check.
 
     \return
+    \ilc{nou::TrueConstant}, if \ilc{T} is nothrow copy constructible, \ilc{nou::FalseConstant} if it not.
+
+    \brief
+    Checks whether a type is nothrow copy constructible (the constructor in question is marked as
+    \ilc{noexcept}).
+    */
+    template<typename T>
+    struct IsNothrowCopyConstructible : BooleanConstant<std::is_nothrow_copy_constructible_v<T>>
+    {};
+
+    /**
+    \tparam T
+    The type to check.
+
+    \return
     \ilc{nou::TrueConstant}, if \ilc{T} is move constructible, \ilc{nou::FalseConstant} if it not.
 
     \brief
@@ -987,6 +1035,24 @@ namespace nou
     The type to check.
 
     \return
+    \ilc{nou::TrueConstant}, if \ilc{T} is nothrow move constructible, \ilc{nou::FalseConstant} if it not.
+
+    \brief
+    Checks whether a type is nothrow move constructible (the constructor in question is marked as
+    \ilc{noexcept}).
+    */
+    template<typename T>
+    struct IsNothrowMoveConstructible : BooleanConstant<std::is_nothrow_move_constructible_v<T>>
+    {};
+
+    /**
+    \tparam TO
+    The type to assign to.
+
+    \tparam FROM
+    The type to assign from.
+
+    \return
     \ilc{nou::TrueConstant}, if \ilc{FROM} is assignable to \ilc{TO}, \ilc{nou::FalseConstant} if it not.
 
     \brief
@@ -997,8 +1063,11 @@ namespace nou
     {};
 
     /**
-    \tparam T
-    The type to check.
+    \tparam TO
+    The type to assign to.
+
+    \tparam FROM
+    The type to assign from.
 
     \return
     \ilc{nou::TrueConstant}, if \ilc{FROM} is trivially assignable to \ilc{TO}, \ilc{nou::FalseConstant} if it
@@ -1009,6 +1078,25 @@ namespace nou
     */
     template<typename TO, typename FROM>
     struct IsTriviallyAssignable : BooleanConstant<std::is_trivially_assignable_v<TO, FROM>>
+    {};
+
+    /**
+    \tparam TO
+    The type to assign to.
+
+    \tparam FROM
+    The type to assign from.
+
+    \return
+    \ilc{nou::TrueConstant}, if \ilc{FROM} is nothrow assignable to \ilc{TO}, \ilc{nou::FalseConstant} if it
+    not.
+
+    \brief
+    Checks whether a type is nothrow assignable to another (the assignment operator in question is marked as
+    \ilc{noexcept}).
+    */
+    template<typename TO, typename FROM>
+    struct IsNothrowAssignable : BooleanConstant<std::is_nothrow_assignable_v<TO, FROM>>
     {};
 
     /**
@@ -1045,6 +1133,21 @@ namespace nou
     The type to check.
 
     \return
+    \ilc{nou::TrueConstant}, if \ilc{T} is nothrow copy assignable, \ilc{nou::FalseConstant} if it not.
+
+    \brief
+    Checks whether a type is nothrow copy assignable to another (the assignment operator in question is marked
+    as \ilc{noexcept}).
+    */
+    template<typename T>
+    struct IsNothrowCopyAssignable : BooleanConstant<std::is_nothrow_copy_assignable_v<T>>
+    {};
+
+    /**
+    \tparam T
+    The type to check.
+
+    \return
     \ilc{nou::TrueConstant}, if \ilc{T} is move assignable, \ilc{nou::FalseConstant} if it not.
 
     \brief
@@ -1074,6 +1177,21 @@ namespace nou
     The type to check.
 
     \return
+    \ilc{nou::TrueConstant}, if \ilc{T} is nothrow move assignable, \ilc{nou::FalseConstant} if it not.
+
+    \brief
+    Checks whether a type is nothrow move assignable to another (the assignment operator in question is marked
+    as \ilc{noexcept}).
+    */
+    template<typename T>
+    struct IsNothrowMoveAssignable : BooleanConstant<std::is_nothrow_move_assignable_v<T>>
+    {};
+
+    /**
+    \tparam T
+    The type to check.
+
+    \return
     \ilc{nou::TrueConstant}, if \ilc{T} is destructible, \ilc{nou::FalseConstant} if it not.
 
     \brief
@@ -1096,6 +1214,21 @@ namespace nou
     */
     template<typename T>
     struct IsTriviallyDestructible : BooleanConstant<std::is_trivially_destructible_v<T>>
+    {};
+
+    /**
+    \tparam T
+    The type to check.
+
+    \return
+    \ilc{nou::TrueConstant}, if \ilc{T} is nothrow destructible, \ilc{nou::FalseConstant} if it
+    not.
+
+    \brief
+    Checks whether a type is nothrow destructible (the destructor is marked as \ilc{noexcept}).
+    */
+    template<typename T>
+    struct IsNothrowDestructible : BooleanConstant<std::is_nothrow_destructible_v<T>>
     {};
 
     /**
@@ -1172,7 +1305,7 @@ namespace nou
     \ilc{nou::FalseConstant} if it not.
 
     \brief
-    Returns whether a function is invokable with certain parameters.
+    Returns whether a function is invocable with certain parameters.
     */
     template<typename F, typename... ARGS>
     struct IsInvokable : BooleanConstant<std::is_invocable_v<F, ARGS...>>
