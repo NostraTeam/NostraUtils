@@ -176,6 +176,7 @@ if(NOU_BUILD_EXAMPLES)
     nou_add_example(pair.ex)
 	nou_add_example(util.ex)
     nou_add_example(meta.ex)
+    nou_add_example(optional.ex)
 endif()
 # Examples end
 

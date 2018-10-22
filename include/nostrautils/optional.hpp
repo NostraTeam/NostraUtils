@@ -21,9 +21,23 @@ This data structure has two main uses:
 
 \par_example
 \code{.cpp}
+class Test
+{
+public:
+    Test()
+    {
+        std::cout << "Test::Test()\n";
+    }
+};
 
+nou::Optional<Test> opt; // the wrapped object is not initialized yet
+
+std::cout << "opt.isValid(): " << opt.isValid() << "\n";
+
+opt = Test(); // the wrapped object is now initialized
+
+std::cout << "opt.isValid(): " << opt.isValid() << "\n";
 \endcode
-.....
 
 For a more detailed example, see \link optional.ex.cpp here\endlink.
 */
@@ -51,65 +65,383 @@ An example that demonstrates the usage of the optional component.
 
 namespace nou
 {
+    template<typename T>
+    class Optional;
+
+    ///\internal
     namespace internal
     {
         struct InvalidOpt final
         {
+            InvalidOpt()                   = default;
+            InvalidOpt(const InvalidOpt &) = delete; // avoid copy; to save performance
+
             // empty dummy type
         };
 
-        constexpr InvalidOpt INVALID_OPT_INSTANCE = InvalidOpt();
+        constexpr InvalidOpt INVALID_OPT_INSTANCE = InvalidOpt{};
+
+        /**
+        \tparam T
+        The type of the wrapped object.
+
+        \tparam TRIV_DEST
+        If \ilc{T} is trivially destructible. For this class, this is always \ilc{true} (there is a
+        specialization for \ilc{false}).
+
+        \brief
+        The base class of \ilc{nou::Optional} for all types that are trivially destructible.
+        */
+        template<typename T, boolean TRIV_DEST>
+        class OptionalStorage
+        {
+        protected:
+            /**
+            \brief
+            The type of the wrapped object.
+            */
+            using Type = T;
+
+            struct Empty
+            {
+                // empty dummy type
+            };
+
+            union
+            {
+                /**
+                \brief
+                The wrapped object. This union member is active if the \ilc{nou::Optional} instance is valid.
+                */
+                Type m_data;
+
+                /**
+                \brief
+                The wrapped object. This union member is active if the \ilc{nou::Optional} instance is not
+                valid.
+                */
+                Empty m_dummy;
+            };
+
+            /**
+            \brief
+            The valid state.
+
+            \details
+            \ilc{true} = valid, \ilc{false} = invalid.
+            */
+            boolean m_isValid;
+
+            /**
+            \brief
+            A dummy type used by some constructors.
+            */
+            struct DummyValid
+            {
+                // empty dummy type
+            };
+
+            /**
+            \brief
+            A dummy type used by some constructors.
+            */
+            struct DummyInvalid
+            {
+                // empty dummy type
+            };
+
+            /**
+            \tparam OT
+            The type of the wrapped object of \ilc{other}.
+
+            \param dummy
+            A dummy parameter. Will not be used.
+
+            \param other
+            The optional to copy the data from.
+
+            \brief
+            Constructs a new instance by copying the wrapped object of \ilc{other}.
+
+            \details
+            If this constructor is called, \ilc{other} needs to be valid.
+            */
+            template<typename OT>
+            constexpr OptionalStorage(const DummyValid &dummy, const Optional<OT> &other) noexcept;
+
+            /**
+            \tparam OT
+            The type of the wrapped object of \ilc{other}.
+
+            \param dummy
+            A dummy parameter. Will not be used.
+
+            \param other
+            Will not be used.
+
+            \brief
+            Constructs a new instance in an invalid state.
+            */
+            template<typename OT>
+            constexpr OptionalStorage(const DummyInvalid &dummy, const Optional<OT> &other) noexcept;
+
+        protected:
+            /**
+            \brief
+            Constructs a new instance in an invalid state.
+            */
+            constexpr OptionalStorage() noexcept;
+
+            /**
+            \tparam ARGS
+            The types of the parameters that will be used to construct the wrapped object. As a consequence,
+            an instance of \ilc{Type} needs to be constructible from instances of these types.
+
+            \param args
+            The arguments that will be used to construct the wrapped object. The values will be forwarded to
+            the constructor of \ilc{Type}.
+
+            \brief
+            Constructs a new instance in a valid state with a wrapped object that was constructed from the
+            passed parameters.
+            */
+            template<typename... ARGS, typename = EnableIfType<IsConstructible<Type, ARGS...>::value>>
+            constexpr OptionalStorage(ARGS &&... args) noexcept;
+
+            /**
+            \tparam OT
+            The type of the object that the passed instance wraps around. \ilc{Type} must be constructible
+            from this type.
+
+            \param other
+            The instance that holds the object that will be copied into the new instance.
+
+            \brief
+            Copies the object of \ilc{other} into the one that is being constructed.
+
+            \details
+            If \ilc{other} is not valid, the instance under construction will be initialized in an invalid
+            state. The wrapped object will not be copied in any way; such copy will only occur if \ilc{other}
+            is valid.
+            */
+            template<typename OT>
+            constexpr OptionalStorage(const Optional<OT> &other) noexcept;
+
+            /**
+            \brief
+            Does nothing (would destroy the wrapped object, but the destructors of the wrapped objects in this
+            class are trivial).
+            */
+            constexpr void destroy() noexcept
+            {}
+
+            ~OptionalStorage() noexcept = default;
+        };
+
+        /**
+        \tparam T
+        The type of the wrapped object.
+
+        \brief
+        The base class of \ilc{nou::Optional} for all types that are not trivially destructible.
+        */
+        template<typename T>
+        class OptionalStorage<T, false>
+        {
+        protected:
+            /**
+            \brief
+            The type of the wrapped object.
+            */
+            using Type = T;
+
+            struct Empty
+            {
+                // empty dummy type
+            };
+
+            union
+            {
+                /**
+                \brief
+                The wrapped object. This union member is active if the \ilc{nou::Optional} instance is valid.
+                */
+                Type m_data;
+
+                /**
+                \brief
+                The wrapped object. This union member is active if the \ilc{nou::Optional} instance is not
+                valid.
+                */
+                Empty m_dummy;
+            };
+
+            /**
+            \brief
+            The valid state.
+
+            \details
+            \ilc{true} = valid, \ilc{false} = invalid.
+            */
+            boolean m_isValid;
+
+            /**
+            \brief
+            A dummy type used by some constructors.
+            */
+            struct DummyValid
+            {
+                // empty dummy type
+            };
+
+            /**
+            \brief
+            A dummy type used by some constructors.
+            */
+            struct DummyInvalid
+            {
+                // empty dummy type
+            };
+
+            /**
+            \tparam OT
+            The type of the wrapped object of \ilc{other}.
+
+            \param dummy
+            A dummy parameter. Will not be used.
+
+            \param other
+            The optional to copy the data from.
+
+            \brief
+            Constructs a new instance by copying the wrapped object of \ilc{other}.
+
+            \details
+            If this constructor is called, \ilc{other} needs to be valid.
+            */
+            template<typename OT>
+            constexpr OptionalStorage(const DummyValid &dummy, const Optional<OT> &other) noexcept;
+
+            /**
+            \tparam OT
+            The type of the wrapped object of \ilc{other}.
+
+            \param dummy
+            A dummy parameter. Will not be used.
+
+            \param other
+            Will not be used.
+
+            \brief
+            Constructs a new instance in an invalid state.
+            */
+            template<typename OT>
+            constexpr OptionalStorage(const DummyInvalid &dummy, const Optional<OT> &other) noexcept;
+
+        protected:
+            /**
+            \brief
+            Constructs a new instance in an invalid state.
+            */
+            inline OptionalStorage() noexcept;
+
+            /**
+            \tparam ARGS
+            The types of the parameters that will be used to construct the wrapped object. As a consequence,
+            an instance of \ilc{Type} needs to be constructible from instances of these types.
+
+            \param args
+            The arguments that will be used to construct the wrapped object. The values will be forwarded to
+            the constructor of \ilc{Type}.
+
+            \brief
+            Constructs a new instance in a valid state with a wrapped object that was constructed from the
+            passed parameters.
+            */
+            template<typename... ARGS, typename = EnableIfType<IsConstructible<Type, ARGS...>::value>>
+            inline OptionalStorage(ARGS &&... args) noexcept;
+
+            /**
+            \tparam OT
+            The type of the object that the passed instance wraps around. \ilc{Type} must be constructible
+            from this type.
+
+            \param other
+            The instance that holds the object that will be copied into the new instance.
+
+            \brief
+            Copies the object of \ilc{other} into the one that is being constructed.
+
+            \details
+            If \ilc{other} is not valid, the instance under construction will be initialized in an invalid
+            state. The wrapped object will not be copied in any way; such copy will only occur if \ilc{other}
+            is valid.
+            */
+            template<typename OT>
+            inline OptionalStorage(const Optional<OT> &other) noexcept;
+
+            /**
+            \brief
+            If it is valid, calls the destructor of the wrapped object.
+            */
+            void destroy() noexcept;
+
+            /**
+            \brief
+            Calls \ilc{destroy()}.
+            */
+            ~OptionalStorage() noexcept;
+        };
+
     } // namespace internal
+      ///\endinternal
 
     template<typename T>
-    class Optional final
+    class Optional final : private internal::OptionalStorage<T, IsTriviallyDestructible<T>::value>
     {
+        static_assert(!(IsReference<T>::value), "T may not be a reference.");
+        static_assert(!(AreSame<T, internal::InvalidOpt>::value));
+
     private:
         /**
         \brief
-        A byte array that contains the wrapped object.
+        The type of the base class. For easier access to the type.
         */
-        alignas(T) byte m_dataStorage[sizeof(T)];
-
-        /**
-        \brief
-        A reference to \ilc{m_dataInstance.m_data}. For convenience.
-        */
-        T &m_data;
-
-        /**
-        \brief
-        The valid state. \ilc{true} if valid, \ilc{false} if not.
-        */
-        boolean m_valid;
+        using Base = internal::OptionalStorage<T, IsTriviallyDestructible<T>::value>;
 
     public:
         /**
         \brief
+        The type of the wrapped object.
+        */
+        using Type = typename Base::Type;
+
+        /**
+        \brief
         Constructs a new instance in an invalid state.
         */
-        inline Optional() noexcept;
+        constexpr Optional() noexcept;
 
         /**
         \tparam ARGS
-        The types of the parameter that will be used to construct the wrapped object. As a consequence, an
-        instance of \ilc{T} needs to be constructible from instances of these types.
+        The types of the parameters that will be used to construct the wrapped object. As a consequence, an
+        instance of \ilc{Type} needs to be constructible from instances of these types.
 
         \param args
         The arguments that will be used to construct the wrapped object. The values will be forwarded to the
-        constructor of \ilc{T}.
+        constructor of \ilc{Type}.
 
         \brief
         Constructs a new instance in a valid state with a wrapped object that was constructed from the passed
         parameters.
-         */
+        */
         template<typename... ARGS, typename = EnableIfType<IsConstructible<T, ARGS...>::value>>
-        explicit inline Optional(ARGS &&... args) noexcept;
+        constexpr Optional(ARGS &&... args) noexcept;
 
         /**
         \tparam OT
-        The type of the object that the passed instance wraps around. \ilc{T} must be constructible from this
-        type.
+        The type of the object that the passed instance wraps around. \ilc{Type} must be constructible from
+        this type.
 
         \param other
         The instance that holds the object that will be copied into the new instance.
@@ -122,12 +454,12 @@ namespace nou
         The wrapped object will not be copied in any way; such copy will only occur if \ilc{other} is valid.
         */
         template<typename OT, typename = EnableIfType<IsConstructible<T, OT>::value>>
-        inline Optional(const Optional<OT> &other) noexcept;
+        constexpr Optional(const Optional<OT> &other) noexcept;
 
         /**
         \tparam OT
-        The type of the object that the passed instance wraps around. \ilc{T} must be constructible from this
-        type.
+        The type of the object that the passed instance wraps around. \ilc{Type} must be constructible from
+        this type.
 
         \param other
         The instance that holds the object that will be moved into the new instance.
@@ -156,7 +488,7 @@ namespace nou
         This constructor should never be used explicitly, its sole purpose is to be used with
         \ilc{nou::invalidOpt()}.
         */
-        inline Optional(const internal::InvalidOpt &invalidOpt) noexcept;
+        constexpr Optional(const internal::InvalidOpt &invalidOpt) noexcept;
 
         /**
         \param other
@@ -170,16 +502,9 @@ namespace nou
         The wrapped object will not be copied in any way; such copy will only occur if \ilc{other} is
         valid.
         */
-        inline Optional(const Optional &other) noexcept;
+        constexpr Optional(const Optional &other) noexcept;
 
         /**
-        \brief
-        Destroys the instance and, if valid, the wrapped object.
-        */
-        inline ~Optional() noexcept;
-
-        /**
-
         \param other
         The instance to move from.
 
@@ -202,7 +527,7 @@ namespace nou
         \brief
         Returns whether the wrapped object is valid or not.
         */
-        inline boolean isValid() const noexcept;
+        [[nodiscard]] constexpr boolean isValid() const noexcept;
 
         /**
         \return
@@ -213,9 +538,18 @@ namespace nou
 
         \warning
         The return value of this method is undefined if the wrapped object is not valid (\ilc{isValid()}
-        returns false).
+        returns \ilc{false}).
+
+        \warning
+        It is possible to set the value of the wrapped object by using this function. However, this is only
+        valid if the object is already valid. Setting the value of an invalid value results in undefined
+        behavior. To set the value of an invalid object, \ilc{set()} or the assignment operator can be used.
+
+        \note
+        This function does not transfer ownership of the wrapped object. The instance of \ilc{Optional} will
+        still be the owner of it.
         */
-        inline T &get() noexcept;
+        [[nodiscard]] inline Type &get() noexcept;
 
         /**
         \return
@@ -226,21 +560,210 @@ namespace nou
 
         \warning
         The return value of this method is undefined if the wrapped object is not valid (\ilc{isValid()}
-        returns false).
+        returns \ilc{false}).
+
+        \note
+        This function does not transfer ownership of the wrapped object. The instance of \ilc{Optional} will
+        still be the owner of it.
         */
-        inline const T &get() const noexcept;
+        [[nodiscard]] constexpr const Type &get() const noexcept;
+
+        /**
+        \param obj
+        The object to return if the wrapped object is not valid.
+
+        \return
+        The wrapped object or \ilc{obj}.
+
+        \brief
+        Returns the wrapped object if it is valid or \ilc{obj} if the wrapped object is not valid.
+
+        \warning
+        It is possible to set the value of the wrapped object by using this function. However, if the object
+        is not valid, the value of \ilc{obj} wil be changed instead. To set the value of an invalid object,
+        \ilc{set()} or the assignment operator can be used.
+
+        \note
+        In contrast to \ilc{get()}, this function never returns an invalid object and, as a consequence, will
+        never result in undefined behavior.
+
+        \note
+        This function does not transfer ownership of the wrapped object. The instance of \ilc{Optional} will
+        still be the owner of it.
+        */
+        [[nodiscard]] inline Type &getOr(Type &obj) noexcept;
+
+        /**
+        \param obj
+        The object to return if the wrapped object is not valid.
+
+        \return
+        The wrapped object or \ilc{obj}.
+
+        \brief
+        Returns the wrapped object if it is valid or \ilc{obj} if the wrapped object is not valid.
+
+        \note
+        In contrast to \ilc{get()}, this function never returns an invalid object and, as a consequence, will
+        never result in undefined behavior.
+
+        \note
+        This function does not transfer ownership of the wrapped object. The instance of \ilc{Optional} will
+        still be the owner of it.
+        */
+        [[nodiscard]] constexpr const Type &getOr(const Type &obj) const noexcept;
 
         /**
         \return
-        \ilc{true} if the wrapped object is valid, \ilc{false} if not.
+        The wrapped object.
 
         \brief
-        Returns whether the wrapped object is valid or not.
+        Returns the wrapped object.
+
+        \warning
+        The return value of this method is undefined if the wrapped object is not valid (\ilc{isValid()}
+        returns \ilc{false}).
+
+        \note
+        This function transfers ownership of the wrapped object. In any other way, it is the same as
+        \ilc{get()}.
+
+        \note
+        After a call to this function, the wrapped object will still be valid (\ilc{isValid()} still returns
+        \ilc{true}), but the wrapped object may be in an unusable state because its data was moved out of it.
+        */
+        [[nodiscard]] inline Type move() noexcept;
+
+        /**
+        \param obj
+        The object to return if the wrapped object is not valid.
+
+        \return
+        The wrapped object or \ilc{obj}.
+
+        \brief
+        Returns the wrapped object if it is valid or \ilc{obj} if the wrapped object is not valid.
+
+        \note
+        In contrast to \ilc{move()}, this function never returns an invalid object and, as a consequence, will
+        never result in undefined behavior.
+
+        \note
+        This function transfers ownership of the wrapped object. In any other way, it is the same as
+        \ilc{getOr()}.
+
+        \note
+        After a call to this function, the wrapped object will still be valid (\ilc{isValid()} still returns
+        \ilc{true}), but the wrapped object may be in an unusable state because its data was moved out of it.
+        [This note only applies if the wrapped object was already valid before this function was called.]
+        */
+        [[nodiscard]] inline Type moveOr(Type &&obj) noexcept;
+
+        /**
+        \return
+        A pointer to the wrapped object or \ilc{nullptr}.
+
+        \brief
+        Returns a pointer to the wrapped object or \ilc{nullptr}.
 
         \details
-        Returns the same as \ilc{isValid()}.
+        If the wrapped object is valid, this function returns a pointer to that object. If it is not valid,
+        \ilc{nullptr} will be returned.
+
+        \warning
+        It is possible to set the value of the wrapped object by using this function. However, if the object
+        is not valid, the assignment of the new value will obviously fail because the returned pointer is
+        \ilc{nullptr}. To set the value of an invalid object, \ilc{set()} or the assignment operator can be
+        used.
         */
-        inline operator boolean() const noexcept;
+        [[nodiscard]] inline Type *ptr() noexcept;
+
+        /**
+        \return
+        A pointer to the wrapped object or \ilc{nullptr}.
+
+        \brief
+        Returns a pointer to the wrapped object or \ilc{nullptr}.
+
+        \details
+        If the wrapped object is valid, this function returns a pointer to that object. If it is not valid,
+        \ilc{nullptr} will be returned.
+        */
+        [[nodiscard]] inline const Type *ptr() const noexcept;
+
+        /**
+        \tparam ARGS
+        The types of the parameters that will be used to construct the wrapped object. As a consequence, an
+        instance of \ilc{Type} needs to be constructible from instances of these types.
+
+        \param args
+        The arguments that will be used to construct the wrapped object.
+
+        \brief
+        Sets the value of the wrapped object.
+
+        \details
+        This function can be used to set the value of an, to that point, invalid object. Doing so will
+        validate the object and \ilc{isValid()} will return \ilc{true} afterwards.
+
+        \note
+        It should be avoided to continuously set the value of (already valid) wrapped objects. This is because
+        this function will always destruct the wrapped object and then re-constrcut a new object. This
+        function does \b not use copy- or move-constructors.
+        */
+        template<typename... ARGS, typename = EnableIfType<IsConstructible<T, ARGS...>::value>>
+        inline void set(ARGS &&... args) noexcept;
+
+        /**
+        \param invalidOpt
+        A dummy parameter. Will not be used.
+
+        \brief
+        Resets the instance that the function is called on.
+
+        \details
+        Calling this function does the same as calling \ilc{reset()} would do.
+        */
+        inline void set(const internal::InvalidOpt &invalidOpt) noexcept;
+
+        /**
+        \brief
+        Invalidates the wrapped object.
+
+        \details
+        If the wrapped object is valid, this will trigger the destruction of that object. After this function
+        was called, \ilc{isValid()} will always return false.
+        */
+        inline void reset() noexcept;
+
+        /**
+        \copydoc nou::Optional::get()
+        */
+        inline Type &operator*() noexcept;
+
+        /**
+        \copydoc nou::Optional::get() const
+        */
+        constexpr const Type &operator*() const noexcept;
+
+        /**
+        \copydoc nou::Optional::ptr()
+        */
+        inline Type *operator->() noexcept;
+
+        /**
+        \copydoc nou::Optional::ptr() const
+        */
+        inline const Type *operator->() const noexcept;
+
+        /**
+        \copydoc nou::Optional::set()
+
+        \return
+        \ret_selfref_op
+        */
+        template<typename... ARGS>
+        inline Optional operator=(ARGS &&... args) noexcept;
     };
 
     /**
@@ -269,100 +792,236 @@ namespace nou
     */
     constexpr const internal::InvalidOpt &invalidOpt();
 
+    //========== Must be defined here to allow usage in constexpr constructors
     template<typename T>
-    inline Optional<T>::Optional() noexcept : m_data(*reinterpret_cast<T *>(m_dataStorage)), m_valid(false)
+    constexpr boolean Optional<T>::isValid() const noexcept
+    {
+        return Base::m_isValid;
+    }
+
+    template<typename T>
+    constexpr auto Optional<T>::get() const noexcept -> const Type &
+    {
+        return Base::m_data;
+    }
+    //==========
+
+    template<typename T, boolean TRIV_DEST>
+    template<typename OT>
+    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(const DummyValid &,
+                                                                       const Optional<OT> &other) noexcept :
+        m_data(other.get()),
+        m_isValid(true)
+    {}
+
+    template<typename T, boolean TRIV_DEST>
+    template<typename OT>
+    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(const DummyInvalid &,
+                                                                       const Optional<OT> &other) noexcept :
+        m_dummy(),
+        m_isValid(false)
+    {}
+
+    template<typename T, boolean TRIV_DEST>
+    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage() noexcept :
+        m_dummy(),
+        m_isValid(false)
+    {}
+
+    template<typename T, boolean TRIV_DEST>
+    template<typename... ARGS, typename>
+    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(ARGS &&... args) noexcept :
+        m_data(forward<ARGS>(args)...),
+        m_isValid(true)
+    {}
+
+    template<typename T, boolean TRIV_DEST>
+    template<typename OT>
+    constexpr internal::OptionalStorage<T, TRIV_DEST>::OptionalStorage(const Optional<OT> &other) noexcept :
+        OptionalStorage(other.isValid() ? OptionalStorage(DummyValid{}, other)
+                                        : OptionalStorage(DummyInvalid{}, other))
+    {}
+
+    template<typename T>
+    template<typename OT>
+    constexpr internal::OptionalStorage<T, false>::OptionalStorage(const DummyValid &,
+                                                                   const Optional<OT> &other) noexcept :
+        m_data(other.get()),
+        m_isValid(true)
+    {}
+
+    template<typename T>
+    template<typename OT>
+    constexpr internal::OptionalStorage<T, false>::OptionalStorage(const DummyInvalid &,
+                                                                   const Optional<OT> &other) noexcept :
+        m_dummy(),
+        m_isValid(false)
+    {}
+
+    template<typename T>
+    inline internal::OptionalStorage<T, false>::OptionalStorage() noexcept : m_dummy(), m_isValid(false)
     {}
 
     template<typename T>
     template<typename... ARGS, typename>
-    inline Optional<T>::Optional(ARGS &&... args) noexcept :
-        m_data(*reinterpret_cast<T *>(m_dataStorage)),
-        m_valid(true)
-    {
-        new(m_dataStorage) T(nou::forward<ARGS>(args)...);
-    }
-
-    template<typename T>
-    template<typename OT, typename>
-    inline Optional<T>::Optional(const Optional<OT> &other) noexcept :
-        m_data(*reinterpret_cast<T *>(m_dataStorage)),
-        m_valid(other.isValid())
-    {
-        if(m_valid)
-        {
-            new(m_dataStorage) T(other.get());
-        }
-    }
-
-    template<typename T>
-    template<typename OT, typename>
-    inline Optional<T>::Optional(Optional<OT> &&other) noexcept :
-        m_data(*reinterpret_cast<T *>(m_dataStorage)),
-        m_valid(other.isValid())
-    {
-        if(m_valid)
-        {
-            new(m_dataStorage) T(other.get());
-        }
-    }
-
-    template<typename T>
-    inline Optional<T>::Optional(const internal::InvalidOpt &invalidOpt) noexcept :
-        m_data(*reinterpret_cast<T *>(m_dataStorage)),
-        m_valid(false)
+    inline internal::OptionalStorage<T, false>::OptionalStorage(ARGS &&... args) noexcept :
+        m_data(forward<ARGS>(args)...),
+        m_isValid(true)
     {}
 
     template<typename T>
-    inline Optional<T>::Optional(const Optional &other) noexcept :
-        m_data(*reinterpret_cast<T *>(m_dataStorage)),
-        m_valid(other.m_valid)
+    template<typename OT>
+    inline internal::OptionalStorage<T, false>::OptionalStorage(const Optional<OT> &other) noexcept :
+        OptionalStorage(other.isValid() ? OptionalStorage(DummyValid{}, other)
+                                        : OptionalStorage(DummyInvalid{}, other))
+    {}
+
+    template<typename T>
+    void internal::OptionalStorage<T, false>::destroy() noexcept
     {
-        if(m_valid)
-            new(m_dataStorage) T(other.m_data);
+        if(m_isValid)
+            m_data.~Type();
     }
 
     template<typename T>
-    inline Optional<T>::Optional(Optional &&other) noexcept :
-        m_data(*reinterpret_cast<T *>(m_dataStorage)),
-        m_valid(other.m_valid)
+    internal::OptionalStorage<T, false>::~OptionalStorage() noexcept
     {
-        if(m_valid)
-        {
-            new(m_dataStorage) T(other.get());
-        }
+        destroy();
     }
 
     template<typename T>
-    inline Optional<T>::~Optional() noexcept
+    constexpr Optional<T>::Optional() noexcept : Base()
+    {}
+
+    template<typename T>
+    template<typename... ARGS, typename>
+    constexpr Optional<T>::Optional(ARGS &&... args) noexcept : Base(forward<ARGS>(args)...)
+    {}
+
+    template<typename T>
+    template<typename OT, typename>
+    constexpr Optional<T>::Optional(const Optional<OT> &other) noexcept : Base(other)
+    {}
+
+    template<typename T>
+    template<typename OT, typename>
+    inline Optional<T>::Optional(Optional<OT> &&other) noexcept
     {
-        if(m_valid)
-        {
-            m_data.~T();
-        }
+        if(other.isValid())
+            set(other.get());
     }
 
     template<typename T>
-    inline boolean Optional<T>::isValid() const noexcept
+    constexpr Optional<T>::Optional(const internal::InvalidOpt &invalidOpt) noexcept : Base()
+    {}
+
+    template<typename T>
+    constexpr Optional<T>::Optional(const Optional<T> &other) noexcept : Base(other)
+    {}
+
+    template<typename T>
+    inline Optional<T>::Optional(Optional<T> &&other) noexcept
     {
-        return m_valid;
+        if(other.isValid())
+            set(other.get());
     }
 
     template<typename T>
-    inline T &Optional<T>::get() noexcept
+    inline auto Optional<T>::get() noexcept -> Type &
     {
-        return m_data;
+        return Base::m_data;
     }
 
     template<typename T>
-    inline const T &Optional<T>::get() const noexcept
+    inline auto Optional<T>::getOr(Type &obj) noexcept -> Type &
     {
-        return m_data;
+        return isValid() ? get() : obj;
     }
 
     template<typename T>
-    inline Optional<T>::operator boolean() const noexcept
+    constexpr auto Optional<T>::getOr(const Type &obj) const noexcept -> const Type &
     {
-        return isValid();
+        return isValid() ? get() : obj;
+    }
+
+    template<typename T>
+    inline auto Optional<T>::move() noexcept -> Type
+    {
+        return ::nou::move(get());
+    }
+
+    template<typename T>
+    inline auto Optional<T>::moveOr(Type &&obj) noexcept -> Type
+    {
+        return isValid() ? ::nou::move(get()) : ::nou::move(obj);
+    }
+
+    template<typename T>
+    inline auto Optional<T>::ptr() noexcept -> Type *
+    {
+        return isValid() ? &get() : nullptr;
+    }
+
+    template<typename T>
+    inline auto Optional<T>::ptr() const noexcept -> const Type *
+    {
+        return isValid() ? &get() : nullptr;
+    }
+
+    template<typename T>
+    template<typename... ARGS, typename>
+    inline void Optional<T>::set(ARGS &&... args) noexcept
+    {
+        Base::destroy();
+
+        new(&get()) Type(forward<ARGS>(args)...);
+        Base::m_isValid = true;
+    }
+
+    template<typename T>
+    inline void Optional<T>::set(const internal::InvalidOpt &invalidOpt) noexcept
+    {
+        reset();
+    }
+
+    template<typename T>
+    inline void Optional<T>::reset() noexcept
+    {
+        Base::destroy();
+        Base::m_isValid = false;
+    }
+
+    template<typename T>
+    inline auto Optional<T>::operator*() noexcept -> Type &
+    {
+        return get();
+    }
+
+    template<typename T>
+    constexpr auto Optional<T>::operator*() const noexcept -> const Type &
+    {
+        return get();
+    }
+
+    template<typename T>
+    inline auto Optional<T>::operator-> () noexcept -> Type *
+    {
+        return ptr();
+    }
+
+    template<typename T>
+    inline auto Optional<T>::operator-> () const noexcept -> const Type *
+    {
+        return ptr;
+    }
+
+    template<typename T>
+    template<typename... ARGS>
+    inline auto Optional<T>::operator=(ARGS &&... args) noexcept -> Optional<T>
+    {
+        set(forward<ARGS>(args)...);
+
+        return *this;
     }
 
     constexpr const internal::InvalidOpt &invalidOpt()
